@@ -24,10 +24,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(anchorPane));
         primaryStage.show();
 
-        BlackjackTemplateModel bjTM = new BlackjackTemplateModel();
+        BlackjackTemplateModel bjTM = new BlackjackTemplateModel(); // used for card test
         bjTM.testCardImageView(); // sets card image view
-        BlackjackHomeScene bjHS = fxmlLoader.getController();
-        bjHS.anchorPaneRoot.getChildren().add(bjTM.queenOfHearts.imageView);
+        BlackjackHomeScene bjHS = fxmlLoader.getController(); // loads active controller from fxml
+        bjHS.anchorPaneRoot.getChildren().add(bjTM.queenOfHearts.imageView); // adds card image view to anchor pane
 
         List<ImageView> handImageViews = new ArrayList<>();
 
