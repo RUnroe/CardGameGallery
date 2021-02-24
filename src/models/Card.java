@@ -18,4 +18,33 @@ public class Card {
     public int getRank() {
         return rank;
     }
+
+    public String getName(){
+        Suit[] suits = Suit.values();
+        String name = "";
+        switch(rank){
+            case 11:
+                name = "Jack";
+                break;
+            case 12:
+                name = "Queen";
+                break;
+            case 13:
+                name = "King";
+                break;
+            default:
+                name = "" + rank;
+                break;
+        }
+        String suit = "";
+        for(int i = 0; i < 4; i++){
+            if(this.suit == suits[i]){
+                switch(i){
+                    case 1:
+
+                }
+            }
+        }
+
+    }
 }
