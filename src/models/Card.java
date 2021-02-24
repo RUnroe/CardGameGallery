@@ -1,10 +1,11 @@
 package models;
 
+import javax.swing.text.html.ImageView;
+
 public class Card {
     private final Suit suit;
     private final int rank;
-    //private image
-
+    private ImageView image;
 
     public Card(Suit suit, int rank) {
         this.suit = suit;
@@ -40,11 +41,22 @@ public class Card {
         for(int i = 0; i < 4; i++){
             if(this.suit == suits[i]){
                 switch(i){
+                    case 0:
+                        suit = "Hearts";
+                        break;
                     case 1:
-
+                        suit = "Clubs";
+                        break;
+                    case 2:
+                        suit = "Spades";
+                        break;
+                    case 3:
+                        suit = "Diamonds";
+                        break;
                 }
             }
         }
+        return name + " of " + suit;
 
     }
 }
