@@ -1,16 +1,11 @@
 package sample;
 
-import blackjack.models.BlackjackTemplateModel;
-import blackjack.presenters.BlackjackHomeScene;
+import blackjack.controllers.BlackjackEngine;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -24,12 +19,14 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(anchorPane));
         primaryStage.show();
 
-        BlackjackTemplateModel bjTM = new BlackjackTemplateModel(); // used for card test
-        bjTM.testCardImageView(); // sets card image view
-        BlackjackHomeScene bjHS = fxmlLoader.getController(); // loads active controller from fxml
-        bjHS.anchorPaneRoot.getChildren().add(bjTM.queenOfHearts.imageView); // adds card image view to anchor pane
+        new BlackjackEngine().setup();
 
-        List<ImageView> handImageViews = new ArrayList<>();
+//        BlackjackTemplateModel bjTM = new BlackjackTemplateModel(); // used for card test
+//        bjTM.testCardImageView(); // sets card image view
+//        BlackjackHomeScene bjHS = fxmlLoader.getController(); // loads active controller from fxml
+//        bjHS.anchorPaneRoot.getChildren().add(bjTM.queenOfHearts.imageView); // adds card image view to anchor pane
+//
+//        List<ImageView> handImageViews = new ArrayList<>();
 
     }
 
