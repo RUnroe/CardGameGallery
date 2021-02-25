@@ -16,7 +16,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("../poker/views/poker-home-scene.fxml"));
         AnchorPane anchorPane = fxmlLoader.load();
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Poker");
         primaryStage.setScene(new Scene(anchorPane));
         primaryStage.show();
 
