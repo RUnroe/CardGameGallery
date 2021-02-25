@@ -18,10 +18,10 @@ public class Deck {
     private void createFullDeck() {
         cards = new ArrayList<>();
         for (int i = 1; i < 14; i++) {
-            cards.add(new Card(ESuit.DIAMONDS, ERank.values()[i]));
-            cards.add(new Card(ESuit.CLUBS, ERank.values()[i]));
-            cards.add(new Card(ESuit.HEARTS, ERank.values()[i]));
-            cards.add(new Card(ESuit.SPADES, ERank.values()[i]));
+            cards.add(new Card(ERank.values()[i], ESuit.DIAMONDS));
+            cards.add(new Card(ERank.values()[i], ESuit.CLUBS));
+            cards.add(new Card(ERank.values()[i], ESuit.HEARTS));
+            cards.add(new Card(ERank.values()[i], ESuit.SPADES));
         }
         Collections.shuffle(cards, new Random());
     }
@@ -30,10 +30,10 @@ public class Deck {
         cards = new ArrayList<>();
         for (int i = 0; i < numOfCardPacks; i++) {
             for (int rankValue = 1; rankValue < 14; rankValue++) {
-                cards.add(new Card(ESuit.DIAMONDS, ERank.values()[rankValue - 1]));
-                cards.add(new Card(ESuit.CLUBS, ERank.values()[rankValue - 1]));
-                cards.add(new Card(ESuit.HEARTS, ERank.values()[rankValue - 1]));
-                cards.add(new Card(ESuit.SPADES, ERank.values()[rankValue - 1]));
+                cards.add(new Card(ERank.values()[rankValue - 1], ESuit.DIAMONDS));
+                cards.add(new Card(ERank.values()[rankValue - 1], ESuit.CLUBS));
+                cards.add(new Card(ERank.values()[rankValue - 1], ESuit.HEARTS));
+                cards.add(new Card(ERank.values()[rankValue - 1], ESuit.SPADES));
             }
             Collections.shuffle(cards, new Random());
         }

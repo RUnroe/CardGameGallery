@@ -1,8 +1,6 @@
 package blackjack.models;
 
 import models.Card;
-import models.ERank;
-import models.ESuit;
 
 public class BlackjackTemplateModel {
     public Card queenOfHearts;
@@ -10,7 +8,7 @@ public class BlackjackTemplateModel {
     public void testCardImageView() {
         String suitAsString;
         String rankAsString;
-        queenOfHearts = new Card(ESuit.SPADES, ERank.ACE);
+//        queenOfHearts = new Card(ESuit.SPADES, ERank.ACE);
 //        switch (queenOfHearts.getRank()) {
 //            case 11 -> rankAsString = "Jack";
 //

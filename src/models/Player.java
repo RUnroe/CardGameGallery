@@ -1,21 +1,30 @@
 package models;
 
-import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.List;
 
 public class Player {
     private String name;
     private int score;
-    private List<Card> hand;
+    private double bank;
+    private ObservableList<Card> hand;
 
     public Player(String name, int score) {
         this.name = name;
         this.score = score;
     }
 
+    public Player(String name, double initialBankAmount) {
+        this.name = name;
+        this.bank = initialBankAmount;
+        this.hand = FXCollections.observableArrayList();
+    }
+
     public Player(String name) {
         this.name = name;
-        this.hand = new ArrayList<>();
+        this.hand = FXCollections.observableArrayList();
     }
 
     public String getName() {
@@ -29,19 +38,33 @@ public class Player {
     public int getScore() {
         return score;
     }
+
     public void setScore(int score) {
         this.score = score;
     }
-    public void addToScore(int add){
+
+    public void addToScore(int add) {
         score += add;
     }
 
-    public List<Card> getHand() {
+    public double getBank() {
+        return bank;
+    }
+
+    public void setBank(double bank) {
+        this.bank = bank;
+    }
+
+    public ObservableList<Card> getHand() {
         return hand;
     }
 
-    public void setHand(List<Card> hand) {
+    public void setHand(ObservableList<Card> hand) {
         this.hand = hand;
+    }
+
+    public void setHand(List<Card> hand) {
+        this.hand = FXCollections.observableArrayList(hand);
     }
 
     public void addToHand(Card card) {
@@ -64,7 +87,7 @@ public class Player {
         int topOfDeckIndex = deck.getCards().size() - 1;
         Card card = deck.getTopCard();
         if (hand == null) {
-            hand = new ArrayList<>();
+            hand = FXCollections.observableArrayList();
         }
         hand.add(card);
         deck.removeTopCard();

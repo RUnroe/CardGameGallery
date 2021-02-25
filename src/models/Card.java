@@ -3,35 +3,34 @@ package models;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.Objects;
 
 
 public class Card {
     private final String name;
-    private final ESuit suit;
     private final ERank rank;
+    private final ESuit suit;
     private final ImageView imageView;
     private boolean isFlipped;
 
-    public Card(ESuit suit, ERank rank) {
-        this.suit = suit;
+    public Card(ERank rank, ESuit suit) {
         this.rank = rank;
+        this.suit = suit;
         this.name = getRankAsString() + " of " + getSuitAsString();
-        this.imageView = loadImageViewFromPath("src/resources/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png");
+        this.imageView = loadImageViewFromPath("/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png");
+//        String url = "src/resources/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png";
+//        this.imageView = loadImageViewFromPath(url);
+//        setupImageView();
         this.isFlipped = false;
     }
 
-    public ESuit getSuit() {
-        return suit;
-    }
-
-    /**
-     * Returns the numerical value of the card's suit.
-     * Useful for comparison when ranks are equivalent.
-     */
-    public int getSuitValue() {
-        return suit.getValue();
+    private void setupImageView() {
+        // image is too large, so it is being shrunk to 1/10th of it's native size while maintaining resolution
+//        this.imageView.setScaleX(0.2);
+//        this.imageView.setScaleY(0.2);
+        // gives an id to keep from being considered duplicates and for later accessibility
+        this.imageView.setId("imgView" + getRankAsString() + getSuitAsString());
+        this.imageView.setVisible(true);
     }
 
     public ERank getRank() {
@@ -44,6 +43,18 @@ public class Card {
      */
     public int getRankValue() {
         return rank.getValue();
+    }
+
+    public ESuit getSuit() {
+        return suit;
+    }
+
+    /**
+     * Returns the numerical value of the card's suit.
+     * Useful for comparison when ranks are equivalent.
+     */
+    public int getSuitValue() {
+        return suit.getValue();
     }
 
     public String getName() {
@@ -89,24 +100,25 @@ public class Card {
 
     private Image loadImageFromPath(String path) {
         Image image = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(path); // opens an input stream on the path
-            image = new Image(fileInputStream); // loads an image from the input stream
-        } catch (IOException e) {
-//                e.printStackTrace();
-            System.err.println("Image could not be loaded: File not found at " + path);
-        }
+//        try {
+//            URL url = getClass().getResource("images/cards/PNG/black/Clubs_Ace_black.png");
+//            System.out.println("path: " + path);
+//            FileInputStream fileInputStream = new FileInputStream(path); // opens an input stream on the path
+        float height = 930.0f * 0.11f;
+        float width = 655.0f * 0.11f;
+        image = new Image(Objects.requireNonNull(getClass().getResource(path)).toExternalForm(), width, height, false, false); // loads an image from the input stream
+//            System.out.println("image: " + image.getUrl());
+//        } catch (IOException e) {
+////                e.printStackTrace();
+//            System.err.println("Image could not be loaded: File not found at " + path);
+//        }
         return image;
     }
 
     public ImageView loadImageViewFromPath(String path) {
         Image image = loadImageFromPath(path);
         ImageView imageView = null;
-        if (image != null) {
-            imageView = new ImageView(image); // creates an image view from loaded image
-        } else {
-            System.err.println("ImageView could not be loaded: source Image was null");
-        }
+        imageView = new ImageView(image); // creates an image view from loaded image
         return imageView;
     }
 
