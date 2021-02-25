@@ -25,6 +25,7 @@ public class PokerModel {
     public void setPlayerList(ArrayList<Player> playerList) {
         this.playerList = playerList;
     }
+
     public void addPlayerToPlayerList(Player player) {
         this.playerList.add(player);
     }
@@ -45,8 +46,8 @@ public class PokerModel {
         return this.deck;
     }
 
-    public void setDeck(Deck deck) {
-        this.deck = deck;
+    public void resetDeck() {
+        this.deck = new Deck(0);
     }
 
     public int getMoneyPool() {
