@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BlackjackEngine {
     int numOfPlayers;
     Player[] players;
-    Player player;
+    Player house;
     FXMLLoader fxmlLoader;
     BlackjackGameScene blackjackGameScene;
 
@@ -46,7 +46,12 @@ public class BlackjackEngine {
         numOfPlayers = 5;
         players = new Player[numOfPlayers];
         for (int i = 0; i < numOfPlayers; i++) {
-            players[i] = new Player("Player " + i, 20.00);
+            if (players[i] == null) {
+                players[i] = new Player("Player " + i, 20.00);
+            }
+        }
+        if (house == null) {
+            house = new Player("House");
         }
 //        player = new Player("Don");
     }
@@ -104,19 +109,20 @@ public class BlackjackEngine {
 
     private void setupStartingHands(Deck deck) {
 //        player = players[0];
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             for (Player player : players) {
                 player.drawFromDeck(deck);
                 player.getHand().sort(new CardComparator());
                 System.out.println(player.getName() + "'s hand sorted by rank: ");
-                int finalI = i;
                 player.getHand().forEach(card -> {
-                    if (finalI > 0) {
-                        card.flip();
-                    }
+                    card.flip();
                     System.out.println('\t' + card.getName());
                 });
                 System.out.println("---------------------------");
+            }
+            house.drawFromDeck(deck);
+            if (i != 1) {
+                house.getHand().forEach(Card::flip);
             }
         }
     }
