@@ -21,9 +21,12 @@ public class Card {
     }
 
     public String getName(){
-        Suit[] suits = Suit.values();
         String name = "";
         switch(rank){
+            case 1:
+            case 14:
+                name = "Ace";
+                break;
             case 11:
                 name = "Jack";
                 break;
@@ -37,25 +40,8 @@ public class Card {
                 name = "" + rank;
                 break;
         }
-        String suit = "";
-        for(int i = 0; i < 4; i++){
-            if(this.suit == suits[i]){
-                switch(i){
-                    case 0:
-                        suit = "Hearts";
-                        break;
-                    case 1:
-                        suit = "Clubs";
-                        break;
-                    case 2:
-                        suit = "Spades";
-                        break;
-                    case 3:
-                        suit = "Diamonds";
-                        break;
-                }
-            }
-        }
+        String suit = this.suit.toString();
+        suit = suit.substring(0,1).toUpperCase()+suit.substring(1).toLowerCase();
         return name + " of " + suit;
 
     }
