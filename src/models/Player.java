@@ -6,6 +6,7 @@ public class Player {
     private String name;
     private int score;
     private ArrayList<Card> hand;
+    private boolean isPlayerAI = false;
 
     public Player(String name, int score) {
         this.name = name;
@@ -48,4 +49,11 @@ public class Player {
         } catch (IndexOutOfBoundsException e){}
     }
 
+    public boolean isPlayerAI() {
+        return isPlayerAI;
+    }
+
+    public void setPlayerAI(boolean playerAI) {
+        isPlayerAI = playerAI;
+    }
 }
