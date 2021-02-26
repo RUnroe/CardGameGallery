@@ -10,35 +10,36 @@ public class EngineOfWar {
     //Holds players, if they are passed in (TBD)
     private static Player[] players;
     private static int round;
+    private static Card[] table;
+
 
     //Takes in any number of players and sets up each player's deck
-    public static void start(Player... p){
+    public static void start(Player... p) {
         round = 1;
         players = p;
+        table = new Card[players.length];
         Deck deck = new Deck(0);
-        for(int i = 0; i < deck.getCards().size(); i++){
+        for (int i = 0; i < deck.getCards().size(); i++) {
             //Splits the deck between players
             try {
                 players[i % p.length].addToHand(deck.getCardAt(0));
                 deck.removeCard(0);
-            } catch (IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("War Loop incorrect");
             }
         }
     }
-    /*
-    * TODO change functionality to return cards played for displaying to the user
-     */
-    public static void takeTurn(){
-        Card[] table = new Card[players.length];
-        //takes the top card of each player's hand and puts it in play
-        for(int i = 0; i < players.length; i++){
-            table[i] = players[i].getHand().get(0);
-            players[i].getHand().remove(0);
-        }
+
+    public static Card getNextCard() {
+        table[round % players.length] = players[round % players.length].getHand().get(0);
+        players[round % players.length].getHand().remove(0);
+        return table[round % players.length];
+    }
+
+    public static boolean checkForHighest() {
         int[] hold = new int[]{-1, 0};
         boolean isEqual = false;
-        for(int i = 0; i < table.length; i++) {
+        for (int i = 0; i < table.length; i++) {
             //checks if larger and held isn't an ace
             if (table[i].getRankValue() > hold[1] && hold[1] != 1) {
                 hold[0] = i;
@@ -52,61 +53,63 @@ public class EngineOfWar {
                 isEqual = false;
             }
         }
-        if(isEqual){
-            ArrayList<Integer> tied = new ArrayList<>(); //holds position of players tied for win
-            for(int i = 0; i < table.length; i++){
-                if(table[i].getRankValue() == hold[1]){
-                    tied.add(i);
-                }
-            }
-            goToWar(tied.stream().mapToInt(i -> i).toArray());
-        } else {
-            players[hold[0]].addToScore(1);
-        }
-
+        return isEqual;
     }
-    public static int goToWar(int[] paw){
+
+    public static int[] getTied() {
+        int[] hold = new int[]{-1, 0};
+        ArrayList<Integer> tied = new ArrayList<>(); //holds position of players tied for win
+        for (int i = 0; i < table.length; i++) {
+            if (table[i].getRankValue() == hold[1]) {
+                tied.add(i);
+            }
+        }
+        return tied.stream().mapToInt(i -> i).toArray();
+    }
+
+    public static Card[][] goToWar(int[] paw) {
         //paw stands for "players at war"
-        Card[][] table = new Card[paw.length][4];
+        Card[][] warTable = new Card[paw.length][4];
 
         //takes cards from each paw and puts them on the table
-        for(int i = 0; i < paw.length; i++){
-            for(int j = 0; j < 4; j++){
-                table[i][j] = players[i].getHand().get(0);
+        for (int i = 0; i < paw.length; i++) {
+            for (int j = 0; j < 4; j++) {
+                warTable[i][j] = players[i].getHand().get(0);
                 players[i].getHand().remove(0);
             }
         }
+        return warTable;
+    }
 
+    public static int[] checkWarWinner(Card[][] warTable) {
         //checks each player's final card for a win or another war
         int[] hold = new int[]{-1, 0};
         boolean isEqual = false;
-        for(int i = 0; i < table.length; i++) {
+        for (int i = 0; i < warTable.length; i++) {
             //checks if larger and held isn't an ace
-            if (table[i][3].getRankValue() > hold[1] && hold[1] != 1) {
+            if (warTable[i][3].getRankValue() > hold[1] && hold[1] != 1) {
                 hold[0] = i;
-                hold[1] = table[i][3].getRankValue();
+                hold[1] = warTable[i][3].getRankValue();
                 isEqual = false;
-            } else if (table[i][3].getRankValue() == hold[1]) {
+            } else if (warTable[i][3].getRankValue() == hold[1]) {
                 isEqual = true;
-            } else if (table[i][3].getRankValue() == 1) {
+            } else if (warTable[i][3].getRankValue() == 1) {
                 hold[0] = i;
                 hold[1] = 1;
                 isEqual = false;
             }
         }
-        if(isEqual){
+        if (isEqual) {
             ArrayList<Integer> tied = new ArrayList<>(); //holds position of players tied for win
             for(int i = 0; i < table.length; i++){
-                if(table[i][3].getRankValue() == hold[1]){
+                if(warTable[i][3].getRankValue() == hold[1]){
                     tied.add(i);
                 }
             }
-            int winner = goToWar(tied.stream().mapToInt(i -> i).toArray());
-            players[winner].addToScore(3);
-            return winner;
+        return tied.stream().mapToInt(i -> i).toArray();
         } else {
-            players[hold[0]].addToScore(3);
-            return hold[0];
+            return new int[]{hold[0]};
+//        }
         }
     }
 }

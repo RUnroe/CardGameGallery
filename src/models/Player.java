@@ -1,6 +1,7 @@
 package models;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ public class Player {
     private String name;
     private int score;
     private double bank;
-    private ArrayList<Card> hand;
+    private ObservableList<Card> hand;
 
     public Player(String name, int score) {
         this.name = name;
@@ -55,11 +56,11 @@ public class Player {
         this.bank = bank;
     }
 
-    public ArrayList<Card> getHand() {
+    public ObservableList<Card> getHand() {
         return hand;
     }
 
-    public void setHand(ArrayList<Card> hand) {
+    public void setHand(ObservableList<Card> hand) {
         this.hand = hand;
     }
 
