@@ -65,33 +65,14 @@ public class Card {
      * Returns user-friendly string representation of rank.
      */
     public String getRankAsString() {
-        return switch (rank) {
-            case ACE -> "Ace";
-            case TWO -> "Two";
-            case THREE -> "Three";
-            case FOUR -> "Four";
-            case FIVE -> "Five";
-            case SIX -> "Six";
-            case SEVEN -> "Seven";
-            case EIGHT -> "Eight";
-            case NINE -> "Nine";
-            case TEN -> "Ten";
-            case JACK -> "Jack";
-            case QUEEN -> "Queen";
-            case KING -> "King";
-        };
+        return rank.toString().toUpperCase().charAt(0) + rank.toString().substring(1).toLowerCase();
     }
 
     /**
      * Returns user-friendly string representation of suit.
      */
     public String getSuitAsString() {
-        return switch (suit) {
-            case DIAMONDS -> "Diamonds";
-            case CLUBS -> "Clubs";
-            case HEARTS -> "Hearts";
-            case SPADES -> "Spades";
-        };
+        return suit.toString().toUpperCase().charAt(0) + suit.toString().substring(1).toLowerCase();
     }
 
     public ImageView getImageView() {
