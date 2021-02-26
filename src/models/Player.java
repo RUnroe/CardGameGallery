@@ -1,15 +1,15 @@
 package models;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
     private String name;
     private int score;
     private double bank;
-    private ObservableList<Card> hand;
+    private ArrayList<Card> hand;
 
     public Player(String name, int score) {
         this.name = name;
@@ -55,11 +55,11 @@ public class Player {
         this.bank = bank;
     }
 
-    public ObservableList<Card> getHand() {
+    public ArrayList<Card> getHand() {
         return hand;
     }
 
-    public void setHand(ObservableList<Card> hand) {
+    public void setHand(ArrayList<Card> hand) {
         this.hand = hand;
     }
 
