@@ -8,7 +8,6 @@ import java.util.List;
 public class Player {
     private String name;
     private int score;
-    private ArrayList<Card> hand;
     private boolean isPlayerAI = false;
     private double bank;
     private ObservableList<Card> hand;

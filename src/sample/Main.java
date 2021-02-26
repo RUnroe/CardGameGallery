@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.Card;
-import models.Suit;
 
 public class Main extends Application {
 
@@ -20,7 +19,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(anchorPane));
         primaryStage.show();
 
-        System.out.println(new Card(Suit.DIAMONDS, 1).getName());
     }
 
 
