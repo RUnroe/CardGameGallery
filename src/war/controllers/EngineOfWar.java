@@ -86,13 +86,15 @@ public class EngineOfWar {
         return tied.stream().mapToInt(i -> i).toArray();
     }
 
-    public Card[][] goToWar(int[] paw) {
+    public Card[][] goToWar(int[] paw, boolean isDoubleWar) {
         //paw stands for "players at war"
-        Card[][] warTable = new Card[paw.length][4];
+        Card[][] warTable = new Card[paw.length][5];
 
         //takes cards from each paw and puts them on the table
         for (int i = 0; i < paw.length; i++) {
-            for (int j = 0; j < 4; j++) {
+            //put table cards in the warTable
+            if(!isDoubleWar)warTable[i][0] = model.getTable()[i];
+            for (int j = 1; j < 5; j++) {
                 warTable[i][j] = model.getPlayers()[i].getHand().get(0);
                 model.getPlayers()[i].getHand().remove(0);
             }

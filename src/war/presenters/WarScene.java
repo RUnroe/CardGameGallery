@@ -101,18 +101,20 @@ public class WarScene {
         }
         else {
             setText("War!");
-            Card[][] warTable = engine.goToWar(new int[]{0, 1});
-            handleWar(warTable);
+            Card[][] warTable = engine.goToWar(new int[]{0, 1}, false);
+            handleWar(warTable, true);
         }
     }
 
-    private void handleWar(Card[][] warTable) {
+    private void handleWar(Card[][] warTable, boolean emptyCardDisplays) {
         int warWinner = engine.checkWarWinner(warTable);
+        updateBoardDisplay(warTable, emptyCardDisplays);
         if(warWinner == -1) { //Tie
             setText("Double War!");
-            handleWar(engine.goToWar(new int[]{0, 1}));
+            handleWar(engine.goToWar(new int[]{0, 1}, true), false);
         }
-        updateBoardDisplay(warTable);
+        else if(warWinner == 0) setText(engine.getModel().getPlayers()[0].getName() + " won the war!");
+        else if(warWinner == 1) setText(engine.getModel().getPlayers()[1].getName() + " won the war!");
     }
     private void setText(String s) {
         OutputTxt.setText(s);
@@ -134,20 +136,19 @@ public class WarScene {
 
     }
 
-    private void updateBoardDisplay(Card[][] warTable) {
+    private void updateBoardDisplay(Card[][] warTable, boolean emptyCardDisplays) {
+        System.out.println(warTable[0][0].getRank() + " ===== " + warTable[1][0].getRank());
+        System.out.println(warTable[0][warTable[0].length-1].getRank() + " " + warTable[1][warTable[1].length-1].getRank());
         System.out.println("War");
         HBox[] displays = new HBox[]{Player1CardDisplay, Player2CardDisplay};
         //loop through each card in list per player
         for(int i = 0; i < warTable.length; i++) {
             //Empty out card displays
-            displays[i].getChildren().clear();
+            if(emptyCardDisplays) displays[i].getChildren().clear();
             for(int j = 0; j < warTable[i].length; j++) {
-                System.out.println(j);
                 displays[i].getChildren().add(warTable[i][j].getImageView());
             }
         }
-        //Populate displays with current cards
-        Player1CardDisplay.getChildren().add(engine.getModel().getTable()[0].getImageView());
-        Player2CardDisplay.getChildren().add(engine.getModel().getTable()[1].getImageView());
+
     }
 }
