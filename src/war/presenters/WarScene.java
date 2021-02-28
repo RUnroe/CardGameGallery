@@ -139,14 +139,23 @@ public class WarScene {
     private void updateBoardDisplay(Card[][] warTable, boolean emptyCardDisplays) {
         System.out.println(warTable[0][0].getRank() + " ===== " + warTable[1][0].getRank());
         System.out.println(warTable[0][warTable[0].length-1].getRank() + " " + warTable[1][warTable[1].length-1].getRank());
-        System.out.println("War");
         HBox[] displays = new HBox[]{Player1CardDisplay, Player2CardDisplay};
         //loop through each card in list per player
         for(int i = 0; i < warTable.length; i++) {
             //Empty out card displays
             if(emptyCardDisplays) displays[i].getChildren().clear();
-            for(int j = 0; j < warTable[i].length; j++) {
-                displays[i].getChildren().add(warTable[i][j].getImageView());
+
+            if(i % 2 == 0) { //Left side of screen
+                //Reverse display order
+                System.out.println("reverse right side");
+                for (int j = warTable[i].length-1; j >= 0; j--) {
+                    displays[i].getChildren().add(warTable[i][j].getImageView());
+                }
+            }
+            else { //Right side of screen
+                for (int j = 0; j < warTable[i].length; j++) {
+                    displays[i].getChildren().add(warTable[i][j].getImageView());
+                }
             }
         }
 

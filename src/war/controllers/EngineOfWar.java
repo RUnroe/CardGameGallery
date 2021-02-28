@@ -6,6 +6,7 @@ import models.Player;
 import war.models.WarModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class EngineOfWar {
 
@@ -121,9 +122,6 @@ public class EngineOfWar {
             //Clear war pile
             warPile.clear();
         }
-        else {
-
-        }
         return winner;
     }
     private void givePlayerWarCards( int playerIndex) {
@@ -134,9 +132,7 @@ public class EngineOfWar {
 
     private void storeWarCards(Card[][] warTable) {
         for (Card[] hand: warTable) {
-            for (Card card: hand) {
-                warPile.add(card);
-            }
+            Collections.addAll(warPile, hand);
         }
     }
 
