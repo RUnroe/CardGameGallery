@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import models.Card;
 import models.Player;
 import war.controllers.EngineOfWar;
 import war.models.WarModel;
@@ -84,8 +85,28 @@ public class WarScene {
         for(int i = 0; i < engine.getModel().getPlayers().length; i++) {
             engine.getNextCard();
         }
+        determineWinner();
         updateBoardDisplay();
     }
+    private void determineWinner() {
+        int winner = engine.determineRoundWinner();
+        if(winner == 1) {
+            setText(engine.getModel().getPlayers()[0].getName() + " won the round!");
+        }
+        else if (winner == 2) {
+            setText(engine.getModel().getPlayers()[1].getName() + " won the round!");
+        }
+        else {
+            setText(" War!");
+            Card[][] warTable = engine.goToWar(engine.getTied());
+        }
+    }
+
+
+    private void setText(String s) {
+        OutputTxt.setText(s);
+    }
+
     private void updateBoardDisplay() {
         System.out.println(engine.getModel().getTable()[0].getRank() + " " + engine.getModel().getTable()[1].getRank());
         //Empty out card displays

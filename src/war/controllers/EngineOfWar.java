@@ -49,16 +49,17 @@ public class EngineOfWar {
         return table[index];
     }
 
-    public int checkForRoundWin() {
-        if(model.getTable()[0].getRankValue() > model.getTable()[1].getRankValue()) {
+    public int determineRoundWinner() {
+        //Make aces high
+        int player1CardValue = model.getTable()[0].getRankValue() == 1 ? 14 : model.getTable()[0].getRankValue();
+        int player2CardValue = model.getTable()[1].getRankValue() == 1 ? 14 : model.getTable()[1].getRankValue();
+        if(player1CardValue > player2CardValue) {
             return 1;
         }
-        else if (model.getTable()[0].getRankValue() < model.getTable()[1].getRankValue()) {
+        else if (player1CardValue < player2CardValue) {
             return 2;
         }
-        else {
-            return 0;
-        }
+        return 0;
     }
 
     public int[] getTied() {
