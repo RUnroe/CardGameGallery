@@ -9,7 +9,9 @@ import java.util.ArrayList;
 
 public class EngineOfWar {
 
-    WarModel model;
+
+
+    private WarModel model;
 
     public EngineOfWar() {
         this.model = new WarModel();
@@ -22,10 +24,10 @@ public class EngineOfWar {
 
     //Takes in any number of players and sets up each player's deck
     public void start(Player... p) {
-        model.setRound(1);
+        model.setRound(0);
         model.setPlayers(p);
-        model.setTable( new Card[model.getPlayers().length]);
-        Deck deck = new Deck(0);
+        model.setupTable();
+        Deck deck = new Deck(1);
         for (int i = 0; i < deck.getCards().size(); i++) {
             //Splits the deck between players
             try {
@@ -38,29 +40,25 @@ public class EngineOfWar {
     }
 
     public Card getNextCard() {
-        model.getTable()[model.getRound() % model.getPlayers().length] = model.getPlayers()[model.getRound() % model.getPlayers().length].getHand().get(0);
-        model.getPlayers()[model.getRound() % model.getPlayers().length].getHand().remove(0);
-        return model.getTable()[model.getRound() % model.getPlayers().length];
+        int index = model.getRound() % model.getPlayers().length;
+        Card[] table = model.getTable();
+        Player player = model.getPlayers()[index];
+        table[index] = player.getHand().get(0);
+        player.getHand().remove(0);
+        model.setRound(model.getRound()+1);
+        return table[index];
     }
 
-    public boolean checkForHighest() {
-        int[] hold = new int[]{-1, 0};
-        boolean isEqual = false;
-        for (int i = 0; i < model.getTable().length; i++) {
-            //checks if larger and held isn't an ace
-            if (model.getTable()[i].getRankValue() > hold[1] && hold[1] != 1) {
-                hold[0] = i;
-                hold[1] = model.getTable()[i].getRankValue();
-                isEqual = false;
-            } else if (model.getTable()[i].getRankValue() == hold[1]) {
-                isEqual = true;
-            } else if (model.getTable()[i].getRankValue() == 1) {
-                hold[0] = i;
-                hold[1] = 1;
-                isEqual = false;
-            }
+    public int checkForRoundWin() {
+        if(model.getTable()[0].getRankValue() > model.getTable()[1].getRankValue()) {
+            return 1;
         }
-        return isEqual;
+        else if (model.getTable()[0].getRankValue() < model.getTable()[1].getRankValue()) {
+            return 2;
+        }
+        else {
+            return 0;
+        }
     }
 
     public int[] getTied() {
@@ -118,5 +116,9 @@ public class EngineOfWar {
             return new int[]{hold[0]};
 //        }
         }
+    }
+
+    public WarModel getModel() {
+        return model;
     }
 }

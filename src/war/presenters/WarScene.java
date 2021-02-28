@@ -11,7 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import models.Player;
 import war.controllers.EngineOfWar;
+import war.models.WarModel;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -37,6 +39,7 @@ public class WarScene {
     public Label OutputTxt;
     public Button QuitGameBtn;
 
+    private static EngineOfWar engine;
 
     public void changeScene(Stage stage, String fxmlPath) {
         try {
@@ -51,6 +54,8 @@ public class WarScene {
     }
 
     public void loadGame(ActionEvent actionEvent) {
+        //Change this later. Pass in deserialized file
+        engine = new EngineOfWar(new WarModel());
     }
 
     public void toggleIncludingAI(ActionEvent actionEvent) {
@@ -66,9 +71,29 @@ public class WarScene {
 
     public void createGame(ActionEvent actionEvent) {
         changeScene((Stage) CreateGameBtn.getScene().getWindow(), "../views/war-game-scene.fxml");
+        engine = new EngineOfWar();
+        engine.start(new Player(Player1NameInput.getText()), new Player(Player2NameInput.getText()));
     }
 
     public void quitGame(ActionEvent actionEvent) {
         changeScene((Stage) QuitGameBtn.getScene().getWindow(), "../views/war-home-scene.fxml");
+    }
+
+    public void playRound(ActionEvent actionEvent) {
+        //Make each player place their card on the board
+        for(int i = 0; i < engine.getModel().getPlayers().length; i++) {
+            engine.getNextCard();
+        }
+        updateBoardDisplay();
+    }
+    private void updateBoardDisplay() {
+        System.out.println(engine.getModel().getTable()[0].getRank() + " " + engine.getModel().getTable()[1].getRank());
+        //Empty out card displays
+        Player1CardDisplay.getChildren().clear();
+        Player2CardDisplay.getChildren().clear();
+        //Populate displays with current cards
+        Player1CardDisplay.getChildren().add(engine.getModel().getTable()[0].getImageView());
+        Player2CardDisplay.getChildren().add(engine.getModel().getTable()[1].getImageView());
+
     }
 }
