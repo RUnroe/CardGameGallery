@@ -9,9 +9,10 @@ import java.util.ArrayList;
 
 public class EngineOfWar {
 
-
-
     private WarModel model;
+
+    //Holds cards from war in the case that a second war takes place
+    private ArrayList<Card> warPile = new ArrayList<>();
 
     public EngineOfWar() {
         this.model = new WarModel();
@@ -99,35 +100,41 @@ public class EngineOfWar {
         return warTable;
     }
 
-    public int[] checkWarWinner(Card[][] warTable) {
-        //checks each player's final card for a win or another war
-        int[] hold = new int[]{-1, 0};
-        boolean isEqual = false;
-        for (int i = 0; i < warTable.length; i++) {
-            //checks if larger and held isn't an ace
-            if (warTable[i][3].getRankValue() > hold[1] && hold[1] != 1) {
-                hold[0] = i;
-                hold[1] = warTable[i][3].getRankValue();
-                isEqual = false;
-            } else if (warTable[i][3].getRankValue() == hold[1]) {
-                isEqual = true;
-            } else if (warTable[i][3].getRankValue() == 1) {
-                hold[0] = i;
-                hold[1] = 1;
-                isEqual = false;
-            }
+    public int checkWarWinner(Card[][] warTable) {
+        //Make aces high
+        int player1CardValue = warTable[0][warTable[0].length-1].getRankValue() == 1 ? 14 : warTable[0][warTable[0].length-1].getRankValue();
+        int player2CardValue = warTable[1][warTable[1].length-1].getRankValue() == 1 ? 14 : warTable[1][warTable[1].length-1].getRankValue();
+        int winner = -1;
+        if(player1CardValue > player2CardValue) {
+            winner = 0;
         }
-        if (isEqual) {
-            ArrayList<Integer> tied = new ArrayList<>(); //holds position of players tied for win
-            for(int i = 0; i < model.getTable().length; i++){
-                if(warTable[i][3].getRankValue() == hold[1]){
-                    tied.add(i);
-                }
+        else if (player1CardValue < player2CardValue) {
+            winner = 1;
+        }
+        //Store cards from war in a list
+        storeWarCards(warTable);
+        //If war is not a tie
+        if(winner > -1) {
+            givePlayerWarCards(winner);
+            //Clear war pile
+            warPile.clear();
+        }
+        else {
+
+        }
+        return winner;
+    }
+    private void givePlayerWarCards( int playerIndex) {
+        for (Card card: warPile) {
+            model.getPlayers()[playerIndex].addToHand(card);
+        }
+    }
+
+    private void storeWarCards(Card[][] warTable) {
+        for (Card[] hand: warTable) {
+            for (Card card: hand) {
+                warPile.add(card);
             }
-        return tied.stream().mapToInt(i -> i).toArray();
-        } else {
-            return new int[]{hold[0]};
-//        }
         }
     }
 

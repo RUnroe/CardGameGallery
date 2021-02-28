@@ -87,23 +87,33 @@ public class WarScene {
             engine.getNextCard();
         }
         determineWinner();
-        updateBoardDisplay();
+
     }
     private void determineWinner() {
         int winner = engine.determineRoundWinner();
         if(winner == 0) {
             setText(engine.getModel().getPlayers()[0].getName() + " won the round!");
+            updateBoardDisplay();
         }
         else if (winner == 1) {
             setText(engine.getModel().getPlayers()[1].getName() + " won the round!");
+            updateBoardDisplay();
         }
         else {
-            setText(" War!");
-            Card[][] warTable = engine.goToWar(engine.getTied());
+            setText("War!");
+            Card[][] warTable = engine.goToWar(new int[]{0, 1});
+            handleWar(warTable);
         }
     }
 
-
+    private void handleWar(Card[][] warTable) {
+        int warWinner = engine.checkWarWinner(warTable);
+        if(warWinner == -1) { //Tie
+            setText("Double War!");
+            handleWar(engine.goToWar(new int[]{0, 1}));
+        }
+        updateBoardDisplay(warTable);
+    }
     private void setText(String s) {
         OutputTxt.setText(s);
     }
@@ -122,5 +132,22 @@ public class WarScene {
         Player1CardDisplay.getChildren().add(engine.getModel().getTable()[0].getImageView());
         Player2CardDisplay.getChildren().add(engine.getModel().getTable()[1].getImageView());
 
+    }
+
+    private void updateBoardDisplay(Card[][] warTable) {
+        System.out.println("War");
+        HBox[] displays = new HBox[]{Player1CardDisplay, Player2CardDisplay};
+        //loop through each card in list per player
+        for(int i = 0; i < warTable.length; i++) {
+            //Empty out card displays
+            displays[i].getChildren().clear();
+            for(int j = 0; j < warTable[i].length; j++) {
+                System.out.println(j);
+                displays[i].getChildren().add(warTable[i][j].getImageView());
+            }
+        }
+        //Populate displays with current cards
+        Player1CardDisplay.getChildren().add(engine.getModel().getTable()[0].getImageView());
+        Player2CardDisplay.getChildren().add(engine.getModel().getTable()[1].getImageView());
     }
 }
