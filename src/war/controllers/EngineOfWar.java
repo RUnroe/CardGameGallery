@@ -18,6 +18,8 @@ public class EngineOfWar {
         this.model = model;
     }
 
+
+
     //Takes in any number of players and sets up each player's deck
     public void start(Player... p) {
         model.setRound(1);
