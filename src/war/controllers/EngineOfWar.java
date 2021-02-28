@@ -28,7 +28,9 @@ public class EngineOfWar {
         model.setPlayers(p);
         model.setupTable();
         Deck deck = new Deck(1);
-        for (int i = 0; i < deck.getCards().size(); i++) {
+        System.out.println(deck.getCards().size());
+        int deckSize = ((ArrayList<Card>) deck.getCards().clone()).size();
+        for (int i = 0; i < deckSize; i++) {
             //Splits the deck between players
             try {
                 model.getPlayers()[i % p.length].addToHand(deck.getCardAt(0));
@@ -53,13 +55,23 @@ public class EngineOfWar {
         //Make aces high
         int player1CardValue = model.getTable()[0].getRankValue() == 1 ? 14 : model.getTable()[0].getRankValue();
         int player2CardValue = model.getTable()[1].getRankValue() == 1 ? 14 : model.getTable()[1].getRankValue();
+        int winner = -1;
         if(player1CardValue > player2CardValue) {
-            return 1;
+            winner = 0;
         }
         else if (player1CardValue < player2CardValue) {
-            return 2;
+            winner = 1;
         }
-        return 0;
+        //If round is not a tie
+        if(winner > -1) {
+           givePlayerTableCards(winner);
+        }
+        return winner;
+    }
+    private void givePlayerTableCards(int playerIndex) {
+        for(Card card : model.getTable()){
+            model.getPlayers()[playerIndex].addToHand(card);
+        }
     }
 
     public int[] getTied() {

@@ -81,6 +81,7 @@ public class WarScene {
     }
 
     public void playRound(ActionEvent actionEvent) {
+        updateCardCountDisplay();
         //Make each player place their card on the board
         for(int i = 0; i < engine.getModel().getPlayers().length; i++) {
             engine.getNextCard();
@@ -90,10 +91,10 @@ public class WarScene {
     }
     private void determineWinner() {
         int winner = engine.determineRoundWinner();
-        if(winner == 1) {
+        if(winner == 0) {
             setText(engine.getModel().getPlayers()[0].getName() + " won the round!");
         }
-        else if (winner == 2) {
+        else if (winner == 1) {
             setText(engine.getModel().getPlayers()[1].getName() + " won the round!");
         }
         else {
@@ -105,6 +106,11 @@ public class WarScene {
 
     private void setText(String s) {
         OutputTxt.setText(s);
+    }
+
+    private void updateCardCountDisplay() {
+        Player1CardCountDisplay.setText(engine.getModel().getPlayers()[0].getHand().size() + " cards");
+        Player2CardCountDisplay.setText(engine.getModel().getPlayers()[1].getHand().size() + " cards");
     }
 
     private void updateBoardDisplay() {

@@ -29,6 +29,7 @@ public class WarModel {
         return table;
     }
 
+
     public void setupTable() {
         this.table = new Card[players.length];
     }
