@@ -94,10 +94,19 @@ public class EngineOfWar {
         //takes cards from each paw and puts them on the table
         for (int i = 0; i < paw.length; i++) {
             //put table cards in the warTable
-            if(!isDoubleWar)warTable[i][0] = model.getTable()[i];
-            for (int j = 1; j < 5; j++) {
-                warTable[i][j] = model.getPlayers()[i].getHand().get(0);
-                model.getPlayers()[i].getHand().remove(0);
+            //If is not double war, put first card at start of list
+            if(!isDoubleWar){
+                warTable[i][0] = model.getTable()[i];
+                for (int j = 1; j < 5; j++) {
+                    warTable[i][j] = model.getPlayers()[i].getHand().get(0);
+                    model.getPlayers()[i].getHand().remove(0);
+                }
+            }
+            else {
+                for (int j = 0; j < 4; j++) {
+                    warTable[i][j] = model.getPlayers()[i].getHand().get(0);
+                    model.getPlayers()[i].getHand().remove(0);
+                }
             }
         }
         return warTable;

@@ -90,12 +90,15 @@ public class WarScene {
     }
 
     public void playRound(ActionEvent actionEvent) {
+        //while(engine.checkForWin() == -1) {
+        updatePlayerNames();
         updateCardCountDisplay();
         //Make each player place their card on the board
-        for(int i = 0; i < engine.getModel().getPlayers().length; i++) {
+        for (int i = 0; i < engine.getModel().getPlayers().length; i++) {
             engine.getNextCard();
         }
         determineWinnerOfRound();
+        //}
         if(engine.checkForWin() > -1) gameWon(engine.getModel().getPlayers()[engine.checkForWin()]);
     }
 
