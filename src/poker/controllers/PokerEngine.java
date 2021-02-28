@@ -11,21 +11,22 @@ public class PokerEngine {
     private PokerModel model = new PokerModel();
 
 
-    public PokerEngine(String[] playerNames, boolean playingAgainstAI) {
+    public PokerEngine(ArrayList<Player> players) {
         //Get initial data
         ArrayList<Player> playerList = new ArrayList<>();
-        for(int i = 0; i < playerNames.length; i++) {
-            Player player = new Player(playerNames[i], bankInitValue);
-            playerList.add(player);
+        for (Player player: players) {
+            player.setBank(bankInitValue);
         }
-        int numOfPlayers = playerList.size();
-        if(playingAgainstAI) playerList.get(numOfPlayers-1).setPlayerAI(true);
+
 
         //set initial data in the model
         model.setPlayerList(playerList);
         model.resetPlayersWhoHaveNotFolded();
     }
 
+    public PokerEngine(PokerModel model) {
+        this.model = model;
+    }
 
 
 
