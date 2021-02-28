@@ -1,6 +1,5 @@
 package war.presenters;
 
-import blackjack.controllers.BlackjackEngine;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -80,16 +79,28 @@ public class WarScene {
         changeScene((Stage) QuitGameBtn.getScene().getWindow(), "../views/war-home-scene.fxml");
     }
 
+    private void gameWon(Player winningPlayer) {
+        StartTurnBtn.setDisable(true);
+        setText(winningPlayer.getName() + " won the game!");
+    }
+
+    private void updatePlayerNames() {
+        Player1NameDisplay.setText(engine.getModel().getPlayers()[0].getName());
+        Player2NameDisplay.setText(engine.getModel().getPlayers()[1].getName());
+    }
+
     public void playRound(ActionEvent actionEvent) {
         updateCardCountDisplay();
         //Make each player place their card on the board
         for(int i = 0; i < engine.getModel().getPlayers().length; i++) {
             engine.getNextCard();
         }
-        determineWinner();
-
+        determineWinnerOfRound();
+        if(engine.checkForWin() > -1) gameWon(engine.getModel().getPlayers()[engine.checkForWin()]);
     }
-    private void determineWinner() {
+
+
+    private void determineWinnerOfRound() {
         int winner = engine.determineRoundWinner();
         if(winner == 0) {
             setText(engine.getModel().getPlayers()[0].getName() + " won the round!");

@@ -136,6 +136,13 @@ public class EngineOfWar {
         }
     }
 
+    //return index of winning player. Return -1 for no win
+    public int checkForWin() {
+        if(model.getPlayers()[0].getHand().size() < 4) return 1;
+        else if(model.getPlayers()[1].getHand().size() < 4) return 0;
+        return -1;
+    }
+
     public WarModel getModel() {
         return model;
     }
