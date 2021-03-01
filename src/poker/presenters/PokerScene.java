@@ -34,6 +34,17 @@ public class PokerScene {
     public Label CurrPlayerNameDisplay;
     public Label CurrPlayerBalanceDisplay;
     public Button QuitGameBtn;
+    public Label LeftPlayerNameDisplay;
+    public Label LeftPlayerBalanceDisplay;
+    public Label MidPlayerNameDisplay;
+    public Label MidPlayerBalanceDisplay;
+    public Label RightPlayerNameDisplay;
+    public Label RightPlayerBalanceDisplay;
+    public Label WorkingMoneyDisplay;
+    public Label BetMoneyDisplay;
+    public Label PoolMoneyDisplay;
+    public Label OutputTxt;
+    public Button DiscardBtn;
 
     private int numberOfPlayers = 2;
     private static PokerEngine engine;
@@ -140,4 +151,9 @@ public class PokerScene {
         }
     }
 
+    public void setBetRaiseValue(ActionEvent actionEvent) {
+    }
+
+    public void discardCards(ActionEvent actionEvent) {
+    }
 }
