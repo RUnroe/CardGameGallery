@@ -16,6 +16,7 @@ public class PokerModel {
     private int currentBet;
     private int lastPlayerToRaise = -1;
     private GameStage gameStage = GameStage.ANTE;
+    private boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
 
 
     //Getters and Setters
@@ -119,6 +120,20 @@ public class PokerModel {
 
     public void setGameStage(GameStage gameStage) {
         this.gameStage = gameStage;
+    }
+
+
+
+    public boolean[] getCardsToDiscard() {
+        return cardsToDiscard;
+    }
+    public void resetCardsToDiscard() {
+        for(int i = 0; i < 5; i++) {
+            cardsToDiscard[i] = false;
+        }
+    }
+    public void changeCardToDiscard(int position, boolean doDiscard) {
+        cardsToDiscard[position] = doDiscard;
     }
 
 }
