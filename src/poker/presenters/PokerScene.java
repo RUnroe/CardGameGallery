@@ -308,6 +308,12 @@ public class PokerScene {
             }
             updateCardDisplay();
         }
+        //If the discard stage is over, make all cards fully visible
+        if(engine.getModel().getGameStage() == GameStage.BET) {
+            for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
+                CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 1;");
+            }
+        }
     }
 
     //Event handler for clicking on card
@@ -330,15 +336,17 @@ public class PokerScene {
     }
 
     private void updateCardDisplay() {
-        for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
-            if(engine.getModel().getCardsToDiscard()[i]) {
-                //add border
-                System.out.println("Change border");
-                CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 1;");
-            }
-            else {
-                //remove border
-                CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 0.7;");
+        //Only let listeners do something if in discard stage
+        if(engine.getModel().getGameStage() == GameStage.DISCARD) {
+            for (int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
+                if (engine.getModel().getCardsToDiscard()[i]) {
+                    //add border
+                    System.out.println("Change border");
+                    CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 1;");
+                } else {
+                    //remove border
+                    CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 0.7;");
+                }
             }
         }
     }

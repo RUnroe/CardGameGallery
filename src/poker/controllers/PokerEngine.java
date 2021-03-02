@@ -1,6 +1,7 @@
 package poker.controllers;
 
 import models.*;
+import poker.models.GameStage;
 import poker.models.PokerModel;
 
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ public class PokerEngine {
         givePlayerCards(getModel().getCurrentPlayer(), cardsRemoved);
         model.switchTurn();
         model.resetCardsToDiscard();
+
+        //If the next player is player 1, end discard phase and move to bet phase
+        if(model.getCurrentPlayerIndex() == 0) {
+            model.setGameStage(GameStage.BET);
+        }
     }
 
 
