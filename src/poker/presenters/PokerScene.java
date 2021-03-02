@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import models.Card;
 import models.Player;
 import poker.controllers.PokerEngine;
 
@@ -241,7 +242,12 @@ public class PokerScene {
     }
     //Show face of cards when player has started their turn
     private void showCards() {
+        //clear card container
         CurrPlayerHandContainer.getChildren().clear();
+        //display current players cards
+        for (Card card: engine.getModel().getCurrentPlayer().getHand()) {
+            CurrPlayerHandContainer.getChildren().add(card.getImageView());
+        }
     }
 
     //Disable the bet/raise buttons (1,5,10,20,50,100)
