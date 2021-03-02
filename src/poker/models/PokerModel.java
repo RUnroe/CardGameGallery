@@ -132,8 +132,8 @@ public class PokerModel {
             cardsToDiscard[i] = false;
         }
     }
-    public void changeCardToDiscard(int position, boolean doDiscard) {
-        cardsToDiscard[position] = doDiscard;
+    public void changeCardToDiscard(int position) {
+        cardsToDiscard[position] = !cardsToDiscard[position];
     }
 
 }

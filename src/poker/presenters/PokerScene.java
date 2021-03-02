@@ -1,6 +1,7 @@
 package poker.presenters;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import models.Card;
@@ -217,6 +219,7 @@ public class PokerScene {
         engine.anteUp();
         //Set up game
         endOfTurn();
+        engine.getModel().setGameStage(GameStage.DISCARD);
         //update display
         updatePlayerDisplays();
         setText("Each player has placed their ante\nand has received 5 cards");
@@ -280,6 +283,39 @@ public class PokerScene {
         //display current players cards
         for (Card card: engine.getModel().getCurrentPlayer().getHand()) {
             CurrPlayerHandContainer.getChildren().add(card.getImageView());
+        }
+        //If we are in the discard stage, add listeners to cards
+        if(engine.getModel().getGameStage() == GameStage.DISCARD) {
+            for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
+                CurrPlayerHandContainer.getChildren().get(i).setId("PlayerCard" + i);
+                ((ImageView) CurrPlayerHandContainer.getChildren().get(i)).setOnMouseClicked(selectCardHandler);
+            }
+            updateCardDisplay();
+        }
+    }
+
+    //Event handler for clicking on card
+    EventHandler<MouseEvent> selectCardHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            int indexOfCardClicked = Integer.parseInt((((ImageView) event.getSource()).getId()).split("PlayerCard")[1]);
+            engine.getModel().changeCardToDiscard(indexOfCardClicked);
+            updateCardDisplay();
+            event.consume();
+        }
+    };
+
+    private void updateCardDisplay() {
+        for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
+            if(engine.getModel().getCardsToDiscard()[i]) {
+                //add border
+                System.out.println("Change border");
+                CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 1;");
+            }
+            else {
+                //remove border
+                CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 0.7;");
+            }
         }
     }
 
