@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -203,10 +205,62 @@ public class PokerScene {
     private void anteUp() {
         //engine ante up
         engine.anteUp();
+        //Set up game
+        endOfTurn();
         //update display
         updatePlayerDisplays();
-        setText("Each player has placed their ante");
+        setText("Each player has placed their ante\nand has received 5 cards");
         //change button
         StartTurnBtn.setText("Start Turn");
     }
+
+    //Helper method to get image
+    private ImageView loadImageViewFromPath(String path) {
+        float height = 930.0f * 0.11f;
+        float width = 655.0f * 0.11f;
+        Image image = new Image(Objects.requireNonNull(getClass().getResource(path)).toExternalForm(), width, height, false, false);
+        ImageView imageView = null;
+        imageView = new ImageView(image); // creates an image view from loaded image
+        return imageView;
+    }
+
+
+    private void endOfTurn() {
+        hideCards();
+        disableBetRaiseBtns();
+        disableControlBtns();
+    }
+    // show backs of cards. Used when in-between turns
+    private void hideCards() {
+        //clear card container
+        CurrPlayerHandContainer.getChildren().clear();
+        //display 5 card backs
+        for(int i = 0; i < 5; i++) {
+            CurrPlayerHandContainer.getChildren().add(loadImageViewFromPath("/images/cards/PNG/Card_Back.png"));
+        }
+    }
+    //Show face of cards when player has started their turn
+    private void showCards() {
+        CurrPlayerHandContainer.getChildren().clear();
+    }
+
+    //Disable the bet/raise buttons (1,5,10,20,50,100)
+    private void disableBetRaiseBtns() {
+
+    }
+    //Enable the bet/raise buttons
+    private void enableBetRaiseBtns() {
+
+    }
+
+    //Disable control buttons
+    private void disableControlBtns() {
+
+    }
+
+    //Enable control buttons. Allow user to play their turn
+    private void enableControlBtns() {
+
+    }
+
 }
