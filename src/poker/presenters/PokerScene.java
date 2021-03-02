@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import models.Card;
 import models.Player;
 import poker.controllers.PokerEngine;
+import poker.models.GameStage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -205,6 +206,7 @@ public class PokerScene {
     public void playTurn(ActionEvent actionEvent) {
         if(StartTurnBtn.getText().equals("Ante Up")) {
             anteUp();
+            engine.distributeCards();
         }
         else {
             startOfTurn();
@@ -245,15 +247,17 @@ public class PokerScene {
         showCards();
 
 
-        //if there is no bet, force the first person to make a bet
-        if(engine.getModel().getCurrentBet() == 0) {
-            setText("It is " + engine.getModel().getCurrentPlayer().getName() +"'s turn\nMake a bet to start the game");
-            showControlBtns(new boolean[]{true, false, false, false, false});
-        }
-        //if there is a bet, let the player do anything except for make a new bet
-        else {
-            setText("It is " + engine.getModel().getCurrentPlayer().getName() +"'s turn\nRaise, Go All In, Fold or Call to continue");
-            showControlBtns(new boolean[]{false, true, true, true, true});
+        //if there is no bet and we are in the bet phase, force the first person to make a bet
+        if(engine.getModel().getGameStage() == GameStage.BET) {
+            if (engine.getModel().getCurrentBet() == 0) {
+                setText("It is " + engine.getModel().getCurrentPlayer().getName() + "'s turn\nStart by making a bet");
+                showControlBtns(new boolean[]{true, false, false, false, false});
+            }
+            //if there is a bet, let the player do anything except for make a new bet
+            else {
+                setText("It is " + engine.getModel().getCurrentPlayer().getName() + "'s turn\nRaise, Go All In, Fold or Call to continue");
+                showControlBtns(new boolean[]{false, true, true, true, true});
+            }
         }
     }
 

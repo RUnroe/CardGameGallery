@@ -10,7 +10,7 @@ public class PokerModel {
 
     private ArrayList<Player> playerList = new ArrayList<>();
     private ArrayList<Player> playersWhoHaveNotFolded = new ArrayList<>();
-    private Deck deck = new Deck(0); //I have no clue why the deck class doesn't have a default constructor...
+    private Deck deck = new Deck(1);
     private int moneyPool = 0;
     private int currentPlayerIndex = 0;
     private int currentBet;
@@ -48,7 +48,7 @@ public class PokerModel {
     }
 
     public void resetDeck() {
-        this.deck = new Deck(0);
+        this.deck = new Deck(1);
     }
 
     public int getMoneyPool() {

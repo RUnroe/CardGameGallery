@@ -4,6 +4,5 @@ public enum GameStage {
     ANTE,
     DISCARD,
     BET,
-    RAISE,
     END
 }

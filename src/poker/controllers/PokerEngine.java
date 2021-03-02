@@ -67,6 +67,21 @@ public class PokerEngine {
 
 
 
+    public void distributeCards() {
+        for (Player player: model.getPlayerList()) {
+            //If bank acc is high enough, give them cards
+            if(player.getBank() > -500) {
+                //Give 5 cards
+                for(int i = 0; i < 5; i++) {
+                    //Give top card
+                    player.addToHand(model.getDeck().getTopCard());
+                    //Remove top card from deck
+                    model.getDeck().removeTopCard();
+                }
+            }
+        }
+    }
+
 
 
     //return a pain of integer values. First element is the hand ranking(flush) represented as an int (higher is better).
