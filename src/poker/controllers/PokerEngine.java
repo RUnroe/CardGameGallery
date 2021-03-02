@@ -32,7 +32,12 @@ public class PokerEngine {
 
 
 
-
+    public void anteUp() {
+        for (Player player: model.getPlayerList()) {
+            player.setBank(player.getBank() - 1); // Remove dollar from each player
+            model.addToMoneyPool(1);//Add that dollar to money pool
+        }
+    }
 
 
 

@@ -151,9 +151,33 @@ public class PokerScene {
         }
     }
 
+
+    private void setText(String s) {
+        OutputTxt.setText(s);
+    }
+
+
+
     public void setBetRaiseValue(ActionEvent actionEvent) {
     }
 
     public void discardCards(ActionEvent actionEvent) {
+    }
+
+    public void playTurn(ActionEvent actionEvent) {
+        if(StartTurnBtn.getText().equals("Ante Up")) {
+            anteUp();
+        }
+        else {
+
+        }
+    }
+    private void anteUp() {
+        //engine ante up
+        engine.anteUp();
+        //update display
+        setText("Each player has placed their ante");
+        //change button
+        StartTurnBtn.setText("Start Turn");
     }
 }
