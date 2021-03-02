@@ -70,6 +70,13 @@ public class PokerModel {
         this.currentPlayerIndex = currentPlayerIndex;
     }
 
+    public Player getCurrentPlayer() {return playerList.get(currentPlayerIndex);}
+
+    public Player getNextPlayer(int numOfPlayersAfterCurrent) {
+        int playerIndex = (currentPlayerIndex + numOfPlayersAfterCurrent) % playerList.size();
+        return playerList.get(playerIndex);
+    }
+
     //By default, switch by 1. We do not want to increment the playerIndex when a player folds(is removed from arraylist)
     public void switchTurn() {
         switchTurn(1);

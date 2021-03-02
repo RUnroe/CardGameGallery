@@ -17,12 +17,12 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Label fx:id="CurrPlayerNameDisplay" layoutX="18.0" layoutY="647.0" text="Username" textFill="WHITE">
+      <Label fx:id="CurrPlayerNameDisplay" layoutX="18.0" layoutY="647.0" text="Username" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="CurrPlayerBalanceDisplay" layoutX="35.0" layoutY="670.0" text="\$100" textFill="WHITE">
+      <Label fx:id="CurrPlayerBalanceDisplay" layoutX="35.0" layoutY="670.0" text="\$100" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
@@ -86,32 +86,32 @@
             </Button>
          </children>
       </HBox>
-      <Label fx:id="LeftPlayerNameDisplay" layoutX="16.0" layoutY="12.0" text="Username" textFill="WHITE">
+      <Label fx:id="LeftPlayerNameDisplay" layoutX="16.0" layoutY="12.0" text="Username" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="LeftPlayerBalanceDisplay" layoutX="33.0" layoutY="35.0" text="\$100" textFill="WHITE">
+      <Label fx:id="LeftPlayerBalanceDisplay" layoutX="33.0" layoutY="35.0" text="\$100" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="MidPlayerNameDisplay" layoutX="625.0" layoutY="12.0" text="Username" textFill="WHITE">
+      <Label fx:id="MidPlayerNameDisplay" layoutX="625.0" layoutY="12.0" text="Username" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="MidPlayerBalanceDisplay" layoutX="642.0" layoutY="35.0" text="\$100" textFill="WHITE">
+      <Label fx:id="MidPlayerBalanceDisplay" layoutX="642.0" layoutY="35.0" text="\$100" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="RightPlayerNameDisplay" layoutX="1184.0" layoutY="12.0" text="Username" textFill="WHITE">
+      <Label fx:id="RightPlayerNameDisplay" layoutX="1184.0" layoutY="12.0" text="Username" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="RightPlayerBalanceDisplay" layoutX="1201.0" layoutY="35.0" text="\$100" textFill="WHITE">
+      <Label fx:id="RightPlayerBalanceDisplay" layoutX="1201.0" layoutY="35.0" text="\$100" textFill="WHITE" visible="false">
          <font>
             <Font size="18.0" />
          </font>

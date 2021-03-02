@@ -155,7 +155,35 @@ public class PokerScene {
     private void setText(String s) {
         OutputTxt.setText(s);
     }
+    private void updatePlayerDisplays() {
+        //set current player in bottom left corner
+        displayPlayer(engine.getModel().getCurrentPlayer(), 0);
+        switch(engine.getModel().getPlayerList().size()) {
+            case 2:
+                displayPlayer(engine.getModel().getNextPlayer(1), 2);
+                break;
+            case 3:
+                displayPlayer(engine.getModel().getNextPlayer(1), 1);
+                displayPlayer(engine.getModel().getNextPlayer(2), 3);
+                break;
+            case 4:
+                displayPlayer(engine.getModel().getNextPlayer(1), 1);
+                displayPlayer(engine.getModel().getNextPlayer(2), 2);
+                displayPlayer(engine.getModel().getNextPlayer(3), 3);
+                break;
+        }
+    }
 
+    private void displayPlayer(Player player, int positionIndex) {
+        Label[] nameDisplayArray = new Label[]{CurrPlayerNameDisplay, LeftPlayerNameDisplay, MidPlayerNameDisplay, RightPlayerNameDisplay};
+        Label[] balanceDisplayArray = new Label[]{CurrPlayerBalanceDisplay, LeftPlayerBalanceDisplay, MidPlayerBalanceDisplay, RightPlayerBalanceDisplay};
+        //Make name and balance output visible
+        nameDisplayArray[positionIndex].setVisible(true);
+        balanceDisplayArray[positionIndex].setVisible(true);
+
+        nameDisplayArray[positionIndex].setText(player.getName());
+        balanceDisplayArray[positionIndex].setText("$" + player.getBank());
+    }
 
 
     public void setBetRaiseValue(ActionEvent actionEvent) {
@@ -176,6 +204,7 @@ public class PokerScene {
         //engine ante up
         engine.anteUp();
         //update display
+        updatePlayerDisplays();
         setText("Each player has placed their ante");
         //change button
         StartTurnBtn.setText("Start Turn");

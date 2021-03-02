@@ -8,19 +8,19 @@ import java.util.Collections;
 
 public class PokerEngine {
     private int bankInitValue = 100;
+
     private PokerModel model = new PokerModel();
 
 
     public PokerEngine(ArrayList<Player> players) {
         //Get initial data
-        ArrayList<Player> playerList = new ArrayList<>();
         for (Player player: players) {
             player.setBank(bankInitValue);
         }
 
 
         //set initial data in the model
-        model.setPlayerList(playerList);
+        model.setPlayerList(players);
         model.resetPlayersWhoHaveNotFolded();
     }
 
@@ -196,5 +196,9 @@ public class PokerEngine {
             if(playerHand.getCardAt(i).getSuit() != suit) return false;
         }
         return true;
+    }
+
+    public PokerModel getModel() {
+        return model;
     }
 }
