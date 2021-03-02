@@ -14,7 +14,8 @@ public class PokerModel {
     private int moneyPool = 0;
     private int currentPlayerIndex = 0;
     private int currentBet;
-
+    private int lastPlayerToRaise = -1;
+    private GameStage gameStage = GameStage.ANTE;
 
 
     //Getters and Setters
@@ -101,6 +102,23 @@ public class PokerModel {
 
     public int getNumberOfActivePlayers() {
         return this.playersWhoHaveNotFolded.size();
+    }
+
+
+    public int getLastPlayerToRaise() {
+        return lastPlayerToRaise;
+    }
+
+    public void setLastPlayerToRaise(int lastPlayerToRaise) {
+        this.lastPlayerToRaise = lastPlayerToRaise;
+    }
+
+    public GameStage getGameStage() {
+        return gameStage;
+    }
+
+    public void setGameStage(GameStage gameStage) {
+        this.gameStage = gameStage;
     }
 
 }

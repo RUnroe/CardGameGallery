@@ -301,17 +301,26 @@ public class PokerScene {
 
     //Event listeners for turn buttons
     public void betTurn(ActionEvent actionEvent) {
+        showBetRaiseBtns(true);
     }
 
     public void raiseTurn(ActionEvent actionEvent) {
+        showBetRaiseBtns(true);
+
     }
 
     public void allInTurn(ActionEvent actionEvent) {
+
+        engine.goAllIn();
     }
 
     public void foldTurn(ActionEvent actionEvent) {
+
+        engine.fold();
     }
 
     public void callTurn(ActionEvent actionEvent) {
+
+        engine.call();
     }
 }

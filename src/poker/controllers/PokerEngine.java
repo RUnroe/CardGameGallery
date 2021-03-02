@@ -40,6 +40,34 @@ public class PokerEngine {
     }
 
 
+    public void placeBet(int betValue) {
+
+        model.setCurrentBet(betValue);
+        model.switchTurn();
+    }
+
+    public void raiseBet(int raiseValue) {
+
+        model.raiseCurrentBet(raiseValue);
+        model.switchTurn();
+    }
+
+    public void fold() {
+        model.foldPlayerByIndex(getModel().getCurrentPlayerIndex());
+        model.switchTurn(0);
+    }
+    public void call() {
+
+        model.switchTurn();
+    }
+    public void goAllIn() {
+
+        model.switchTurn();
+    }
+
+
+
+
 
     //return a pain of integer values. First element is the hand ranking(flush) represented as an int (higher is better).
     //Second is the highest value in the hand ranking. This will be useful for tie breakers.
