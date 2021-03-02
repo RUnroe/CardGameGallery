@@ -203,12 +203,15 @@ public class PokerScene {
     }
 
     public void discardCards(ActionEvent actionEvent) {
+        engine.discardCards();
+        endOfTurn();
     }
 
     public void playTurn(ActionEvent actionEvent) {
         if(StartTurnBtn.getText().equals("Ante Up")) {
             anteUp();
             engine.distributeCards();
+            engine.getModel().setGameStage(GameStage.DISCARD);
         }
         else {
             startOfTurn();
@@ -219,7 +222,7 @@ public class PokerScene {
         engine.anteUp();
         //Set up game
         endOfTurn();
-        engine.getModel().setGameStage(GameStage.DISCARD);
+
         //update display
         updatePlayerDisplays();
         setText("Each player has placed their ante\nand has received 5 cards");
@@ -240,18 +243,27 @@ public class PokerScene {
 
     private void endOfTurn() {
         hideCards();
+        showDiscardBtn(false);
         showBetRaiseBtns(false);
         //disable all control buttons
         showControlBtns(new boolean[]{false, false, false, false, false});
+
+        //show next turn btn
+        StartTurnBtn.setVisible(true);
     }
 
 
     private void startOfTurn() {
         showCards();
+        // Hide start turn button
+        StartTurnBtn.setVisible(false);
 
+        if(engine.getModel().getGameStage() == GameStage.DISCARD) {
+            showDiscardBtn(true);
+        }
 
         //if there is no bet and we are in the bet phase, force the first person to make a bet
-        if(engine.getModel().getGameStage() == GameStage.BET) {
+        else if(engine.getModel().getGameStage() == GameStage.BET) {
             if (engine.getModel().getCurrentBet() == 0) {
                 setText("It is " + engine.getModel().getCurrentPlayer().getName() + "'s turn\nStart by making a bet");
                 showControlBtns(new boolean[]{true, false, false, false, false});
@@ -304,6 +316,11 @@ public class PokerScene {
             event.consume();
         }
     };
+
+    private void showDiscardBtn(boolean showButton) {
+        DiscardBtn.setDisable(!showButton);
+    }
+
 
     private void updateCardDisplay() {
         for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {

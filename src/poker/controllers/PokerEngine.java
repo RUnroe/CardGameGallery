@@ -39,6 +39,22 @@ public class PokerEngine {
         }
     }
 
+    public void discardCards() {
+        int cardsRemoved = 0;
+        for(int i = 0; i < model.getCurrentPlayer().getHand().size(); i++) {
+            //If player chose to remove card, remove from hand and add one to the count
+            if(model.getCardsToDiscard()[i]) {
+                cardsRemoved++;
+                Card card = model.getCurrentPlayer().getHand().get(i);
+                model.getCurrentPlayer().removeFromHand(card);
+            }
+        }
+        //Give player the same amount of cards that they discarded
+        givePlayerCards(getModel().getCurrentPlayer(), cardsRemoved);
+        model.switchTurn();
+        model.resetCardsToDiscard();
+    }
+
 
     public void placeBet(int betValue) {
 
@@ -72,17 +88,19 @@ public class PokerEngine {
             //If bank acc is high enough, give them cards
             if(player.getBank() > -500) {
                 //Give 5 cards
-                for(int i = 0; i < 5; i++) {
-                    //Give top card
-                    player.addToHand(model.getDeck().getTopCard());
-                    //Remove top card from deck
-                    model.getDeck().removeTopCard();
-                }
+                givePlayerCards(player, 5);
             }
         }
     }
 
-
+    private void givePlayerCards(Player player, int numOfCards) {
+        for(int i = 0; i < numOfCards; i++) {
+            //Give top card
+            player.addToHand(model.getDeck().getTopCard());
+            //Remove top card from deck
+            model.getDeck().removeTopCard();
+        }
+    }
 
     //return a pain of integer values. First element is the hand ranking(flush) represented as an int (higher is better).
     //Second is the highest value in the hand ranking. This will be useful for tie breakers.
