@@ -2,6 +2,7 @@ package poker.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -48,6 +49,12 @@ public class PokerScene {
     public Label PoolMoneyDisplay;
     public Label OutputTxt;
     public Button DiscardBtn;
+    public HBox BetButtonContainer;
+    public Button BetControlBtn;
+    public Button RaiseControlBtn;
+    public Button AllInControlBtn;
+    public Button FoldControlBtn;
+    public Button CallControlBtn;
 
     private int numberOfPlayers = 2;
     private static PokerEngine engine;
@@ -228,7 +235,7 @@ public class PokerScene {
 
     private void endOfTurn() {
         hideCards();
-        disableBetRaiseBtns();
+        showBetRaiseBtns(false);
         disableControlBtns();
     }
     // show backs of cards. Used when in-between turns
@@ -250,14 +257,13 @@ public class PokerScene {
         }
     }
 
-    //Disable the bet/raise buttons (1,5,10,20,50,100)
-    private void disableBetRaiseBtns() {
-
+    //Enable or disable the bet/raise buttons (1,5,10,20,50,100)
+    private void showBetRaiseBtns(boolean showButtons) {
+        for(Node node :BetButtonContainer.getChildren()) {
+            ((Button) node).setDisable(!showButtons);
+        }
     }
-    //Enable the bet/raise buttons
-    private void enableBetRaiseBtns() {
 
-    }
 
     //Disable control buttons
     private void disableControlBtns() {
@@ -269,4 +275,21 @@ public class PokerScene {
 
     }
 
+
+
+    //Event listeners for turn buttons
+    public void betTurn(ActionEvent actionEvent) {
+    }
+
+    public void raiseTurn(ActionEvent actionEvent) {
+    }
+
+    public void allInTurn(ActionEvent actionEvent) {
+    }
+
+    public void foldTurn(ActionEvent actionEvent) {
+    }
+
+    public void callTurn(ActionEvent actionEvent) {
+    }
 }
