@@ -207,7 +207,7 @@ public class PokerScene {
             anteUp();
         }
         else {
-
+            startOfTurn();
         }
     }
     private void anteUp() {
@@ -236,8 +236,30 @@ public class PokerScene {
     private void endOfTurn() {
         hideCards();
         showBetRaiseBtns(false);
-        disableControlBtns();
+        //disable all control buttons
+        showControlBtns(new boolean[]{false, false, false, false, false});
     }
+
+
+    private void startOfTurn() {
+        showCards();
+
+
+        //if there is no bet, force the first person to make a bet
+        if(engine.getModel().getCurrentBet() == 0) {
+            setText("It is " + engine.getModel().getCurrentPlayer().getName() +"'s turn\nMake a bet to start the game");
+            showControlBtns(new boolean[]{true, false, false, false, false});
+        }
+        //if there is a bet, let the player do anything except for make a new bet
+        else {
+            setText("It is " + engine.getModel().getCurrentPlayer().getName() +"'s turn\nRaise, Go All In, Fold or Call to continue");
+            showControlBtns(new boolean[]{false, true, true, true, true});
+        }
+    }
+
+
+
+
     // show backs of cards. Used when in-between turns
     private void hideCards() {
         //clear card container
@@ -265,15 +287,15 @@ public class PokerScene {
     }
 
 
-    //Disable control buttons
-    private void disableControlBtns() {
-
+    //Show control buttons
+    //takes in array of boolean values representing whether the button should be enabled or not
+    private void showControlBtns(boolean[] displayButtonsArray) {
+        Button[] controlButtons = new Button[]{BetControlBtn, RaiseControlBtn, AllInControlBtn, FoldControlBtn, CallControlBtn};
+        for(int i = 0; i < controlButtons.length; i++) {
+            controlButtons[i].setDisable(!displayButtonsArray[i]);
+        }
     }
 
-    //Enable control buttons. Allow user to play their turn
-    private void enableControlBtns() {
-
-    }
 
 
 
