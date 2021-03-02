@@ -205,6 +205,7 @@ public class PokerScene {
     public void discardCards(ActionEvent actionEvent) {
         engine.discardCards();
         endOfTurn();
+        setText("Discarded! \nNext up is " + engine.getModel().getCurrentPlayer().getName() );
     }
 
     public void playTurn(ActionEvent actionEvent) {
@@ -226,6 +227,7 @@ public class PokerScene {
         //update display
         updatePlayerDisplays();
         setText("Each player has placed their ante\nand has received 5 cards");
+        updateBankDisplay();
         //change button
         StartTurnBtn.setText("Start Turn");
     }
@@ -255,10 +257,12 @@ public class PokerScene {
 
     private void startOfTurn() {
         showCards();
+        updatePlayerDisplays();
         // Hide start turn button
         StartTurnBtn.setVisible(false);
 
         if(engine.getModel().getGameStage() == GameStage.DISCARD) {
+            setText("It is " + engine.getModel().getCurrentPlayer().getName() + "'s turn\nSelect cards you want to discard and then press 'discard'");
             showDiscardBtn(true);
         }
 
@@ -321,6 +325,9 @@ public class PokerScene {
         DiscardBtn.setDisable(!showButton);
     }
 
+    private void updateBankDisplay() {
+        PoolMoneyDisplay.setText("Cash Pool: $" + engine.getModel().getMoneyPool());
+    }
 
     private void updateCardDisplay() {
         for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
