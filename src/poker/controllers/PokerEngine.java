@@ -106,7 +106,7 @@ public class PokerEngine {
     public void fold() {
         model.foldPlayerByIndex(getModel().getCurrentPlayerIndex());
         model.switchTurn(0);
-        checkIfBetPhaseIsOver();
+//        checkIfBetPhaseIsOver();
     }
     public void call() {
         //if not making first bet and its the first players turn, switch to raise phase
@@ -117,12 +117,12 @@ public class PokerEngine {
 
 
         model.switchTurn();
-        checkIfBetPhaseIsOver();
+//        checkIfBetPhaseIsOver();
     }
     public void goAllIn() {
 
         model.switchTurn();
-        checkIfBetPhaseIsOver();
+//        checkIfBetPhaseIsOver();
     }
 
     public boolean checkIfBetPhaseIsOver() {
@@ -314,7 +314,8 @@ public class PokerEngine {
     //Return 0 if deck does not contain straight, 1 if there is a straight, and 2 if straight is (A K Q J 10)
     private int deckContainsStraight(ObservableList<Card>  playerHand) {
         //Make a shallow copy of the cards and sort them
-        ArrayList<Card> cards = (ArrayList<Card>)((ArrayList<Card>) playerHand).clone();
+        //ArrayList<Card> cards = (ArrayList<Card>)((ArrayList<Card>) playerHand).clone();
+        ObservableList<Card> cards = playerHand;
         Collections.sort(cards, new CardComparator());
         //Loop through cards and determine if they are in a straight (increment by 1)
         int numOfCardsInStraight = 1;
