@@ -61,34 +61,44 @@ public class PokerEngine {
         }
     }
 
-
-    public void placeBet(int betValue) {
+    public void putMoneyInPool(int amount) {
         //Remove money from player and put in money pool
         //Players can only bet up to $1000 past their current bank
-        if(betValue < (model.getCurrentPlayer().getBank() + 1000)) {
+        if(amount < (model.getCurrentPlayer().getBank() + 1000)) {
             //Remove money from player
-            model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - betValue);
+            model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - amount);
             //Add money to pool
-            model.addToMoneyPool(betValue);
+            model.addToMoneyPool(amount);
         }
+    }
+
+    public void placeBet(int betValue) {
+
+        //if not making first bet and its the first players turn, switch to raise phase
+        if(model.getCurrentBet() != 0 && model.getCurrentPlayerIndex() == 0) model.setInBetPhase(false);
 
         //if there is no bet, place bet
         if(model.getCurrentBet() == 0) {
             model.setLastPlayerToRaise(model.getCurrentPlayerIndex());
             model.setCurrentBet(betValue);
-            model.switchTurn();
         }
         //If there is bet, raise amount
         else {
             raiseBet(betValue);
         }
+
+        if(model.isInBetPhase()) putMoneyInPool(model.getCurrentBet());
+        else putMoneyInPool(model.getRaiseAmount());
+
+        //switch turn
+        model.switchTurn();
     }
 
     public void raiseBet(int raiseValue) {
+
         model.setRaiseAmount(raiseValue);
         model.setLastPlayerToRaise(model.getCurrentPlayerIndex());
         model.raiseCurrentBet(raiseValue);
-        model.switchTurn();
     }
 
     public void fold() {
@@ -97,9 +107,12 @@ public class PokerEngine {
         checkIfBetPhaseIsOver();
     }
     public void call() {
-        //Put money into pool when calling
-        model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - model.getRaiseAmount());
-        model.addToMoneyPool(model.getRaiseAmount());
+        //if not making first bet and its the first players turn, switch to raise phase
+        if(model.getCurrentBet() != 0 && model.getCurrentPlayerIndex() == 0) model.setInBetPhase(false);
+
+        if(model.isInBetPhase()) putMoneyInPool(model.getCurrentBet());
+        else putMoneyInPool(model.getRaiseAmount());
+
 
         model.switchTurn();
         checkIfBetPhaseIsOver();

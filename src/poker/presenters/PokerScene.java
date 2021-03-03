@@ -262,12 +262,14 @@ public class PokerScene {
 
         //show next turn btn
         StartTurnBtn.setVisible(true);
+
+        updatePlayerDisplays();
+
     }
 
 
     private void startOfTurn() {
         showCards();
-        updatePlayerDisplays();
         // Hide start turn button
         StartTurnBtn.setVisible(false);
 

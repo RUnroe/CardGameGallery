@@ -13,11 +13,12 @@ public class PokerModel {
     private Deck deck = new Deck(1);
     private int moneyPool = 0;
     private int currentPlayerIndex = 0;
-    private int currentBet;
+    private int currentBet = 0;
     private int lastPlayerToRaise = -1;
     private GameStage gameStage = GameStage.ANTE;
     private boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
     private int raiseAmount = 0;
+    private boolean inBetPhase = true;
 
     //Getters and Setters
     public ArrayList<Player> getPlayerList() {
@@ -147,5 +148,11 @@ public class PokerModel {
     }
 
 
+    public boolean isInBetPhase() {
+        return inBetPhase;
+    }
 
+    public void setInBetPhase(boolean inBetPhase) {
+        this.inBetPhase = inBetPhase;
+    }
 }
