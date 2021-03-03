@@ -6,13 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import models.Card;
 import models.CardComparator;
 import models.Deck;
 import models.Player;
-import sample.Main;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
