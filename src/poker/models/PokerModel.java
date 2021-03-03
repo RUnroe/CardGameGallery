@@ -1,5 +1,6 @@
 package poker.models;
 
+import models.Card;
 import models.Deck;
 import models.Player;
 
@@ -27,6 +28,12 @@ public class PokerModel {
 
     public void setPlayerList(ArrayList<Player> playerList) {
         this.playerList = playerList;
+    }
+
+    public void clearPlayersHands() {
+        for (Player player: playerList) {
+            player.setHand(new ArrayList<Card>());
+        }
     }
 
     public void addPlayerToPlayerList(Player player) {

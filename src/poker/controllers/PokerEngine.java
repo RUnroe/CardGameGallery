@@ -33,6 +33,19 @@ public class PokerEngine {
 
 
 
+    public void resetGame() {
+        model.resetPlayersWhoHaveNotFolded();
+        model.resetDeck();
+        //Dont know if this will work properly yet
+        model.clearPlayersHands();
+        model.setMoneyPool(0);
+        model.setRaiseAmount(0);
+        model.setCurrentBet(0);
+        model.setCurrentPlayerIndex(0);
+        model.setLastPlayerToRaise(-1);
+        model.setGameStage(GameStage.ANTE);
+        model.setInBetPhase(true);
+    }
 
 
     public void anteUp() {
