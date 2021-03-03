@@ -17,7 +17,7 @@ public class PokerModel {
     private int lastPlayerToRaise = -1;
     private GameStage gameStage = GameStage.ANTE;
     private boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
-
+    private int raiseAmount = 0;
 
     //Getters and Setters
     public ArrayList<Player> getPlayerList() {
@@ -135,5 +135,17 @@ public class PokerModel {
     public void changeCardToDiscard(int position) {
         cardsToDiscard[position] = !cardsToDiscard[position];
     }
+
+
+
+    public int getRaiseAmount() {
+        return raiseAmount;
+    }
+
+    public void setRaiseAmount(int raiseAmount) {
+        this.raiseAmount = raiseAmount;
+    }
+
+
 
 }

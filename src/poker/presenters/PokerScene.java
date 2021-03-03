@@ -200,6 +200,13 @@ public class PokerScene {
 
 
     public void setBetRaiseValue(ActionEvent actionEvent) {
+        //Make sure the buttons only do something when in the bet stage
+        if(engine.getModel().getGameStage() == GameStage.BET) {
+            //Get value out of button
+            int selectedAmount = Integer.parseInt(((Button) actionEvent.getSource()).getId().split("Dollar")[1]);
+            engine.placeBet(selectedAmount);
+            endOfTurn();
+        }
     }
 
     public void discardCards(ActionEvent actionEvent) {
@@ -244,6 +251,9 @@ public class PokerScene {
 
 
     private void endOfTurn() {
+        updateBankDisplay();
+        updateBetDisplay();
+
         hideCards();
         showDiscardBtn(false);
         showBetRaiseBtns(false);
@@ -334,14 +344,15 @@ public class PokerScene {
     private void updateBankDisplay() {
         PoolMoneyDisplay.setText("Cash Pool: $" + engine.getModel().getMoneyPool());
     }
-
+    private void updateBetDisplay() {
+        BetMoneyDisplay.setText("Bet: $" + engine.getModel().getCurrentBet());
+    }
     private void updateCardDisplay() {
         //Only let listeners do something if in discard stage
         if(engine.getModel().getGameStage() == GameStage.DISCARD) {
             for (int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
                 if (engine.getModel().getCardsToDiscard()[i]) {
                     //add border
-                    System.out.println("Change border");
                     CurrPlayerHandContainer.getChildren().get(i).setStyle("-fx-opacity: 1;");
                 } else {
                     //remove border
@@ -384,15 +395,20 @@ public class PokerScene {
     public void allInTurn(ActionEvent actionEvent) {
 
         engine.goAllIn();
+        endOfTurn();
     }
 
     public void foldTurn(ActionEvent actionEvent) {
 
         engine.fold();
+        endOfTurn();
+
     }
 
     public void callTurn(ActionEvent actionEvent) {
 
         engine.call();
+        endOfTurn();
+
     }
 }

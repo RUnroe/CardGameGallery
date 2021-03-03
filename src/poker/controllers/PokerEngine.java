@@ -63,13 +63,30 @@ public class PokerEngine {
 
 
     public void placeBet(int betValue) {
+        //Remove money from player and put in money pool
+        //Players can only bet up to $1000 past their current bank
+        if(betValue < (model.getCurrentPlayer().getBank() + 1000)) {
+            //Remove money from player
+            model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - betValue);
+            //Add money to pool
+            model.addToMoneyPool(betValue);
+        }
 
-        model.setCurrentBet(betValue);
-        model.switchTurn();
+        //if there is no bet, place bet
+        if(model.getCurrentBet() == 0) {
+            model.setLastPlayerToRaise(model.getCurrentPlayerIndex());
+            model.setCurrentBet(betValue);
+            model.switchTurn();
+        }
+        //If there is bet, raise amount
+        else {
+            raiseBet(betValue);
+        }
     }
 
     public void raiseBet(int raiseValue) {
-
+        model.setRaiseAmount(raiseValue);
+        model.setLastPlayerToRaise(model.getCurrentPlayerIndex());
         model.raiseCurrentBet(raiseValue);
         model.switchTurn();
     }
@@ -77,16 +94,30 @@ public class PokerEngine {
     public void fold() {
         model.foldPlayerByIndex(getModel().getCurrentPlayerIndex());
         model.switchTurn(0);
+        checkIfBetPhaseIsOver();
     }
     public void call() {
+        //Put money into pool when calling
+        model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - model.getRaiseAmount());
+        model.addToMoneyPool(model.getRaiseAmount());
 
         model.switchTurn();
+        checkIfBetPhaseIsOver();
     }
     public void goAllIn() {
 
         model.switchTurn();
+        checkIfBetPhaseIsOver();
     }
 
+    private void checkIfBetPhaseIsOver() {
+        //If the current player is the last person to raise (made it once around the table), then move to next phase
+        if(model.getCurrentPlayerIndex() == model.getLastPlayerToRaise()) {
+            model.setGameStage(GameStage.END);
+            System.out.println("Check for winner");
+            //Check for the winner
+        }
+    }
 
 
     public void distributeCards() {
