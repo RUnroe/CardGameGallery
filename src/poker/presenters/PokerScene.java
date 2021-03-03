@@ -47,7 +47,6 @@ public class PokerScene {
     public Label MidPlayerBalanceDisplay;
     public Label RightPlayerNameDisplay;
     public Label RightPlayerBalanceDisplay;
-    public Label WorkingMoneyDisplay;
     public Label BetMoneyDisplay;
     public Label PoolMoneyDisplay;
     public Label OutputTxt;

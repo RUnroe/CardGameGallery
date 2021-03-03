@@ -116,11 +116,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="WorkingMoneyDisplay" layoutX="642.0" layoutY="425.0" text="\$100" textFill="WHITE">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
       <Label fx:id="BetMoneyDisplay" layoutX="634.0" layoutY="205.0" text="Bet: $0" textFill="WHITE">
          <font>
             <Font size="18.0" />
