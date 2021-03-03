@@ -1,5 +1,7 @@
 package poker.controllers;
 
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import models.*;
 import poker.models.GameStage;
 import poker.models.PokerModel;
@@ -123,13 +125,13 @@ public class PokerEngine {
         checkIfBetPhaseIsOver();
     }
 
-    private void checkIfBetPhaseIsOver() {
+    public boolean checkIfBetPhaseIsOver() {
         //If the current player is the last person to raise (made it once around the table), then move to next phase
         if(model.getCurrentPlayerIndex() == model.getLastPlayerToRaise()) {
             model.setGameStage(GameStage.END);
-            System.out.println("Check for winner");
-            //Check for the winner
+            return true;
         }
+        return false;
     }
 
 
@@ -152,9 +154,42 @@ public class PokerEngine {
         }
     }
 
+    private void giveMoneyPool(Player player) {
+        player.setBank(player.getBank() + model.getMoneyPool());
+        model.setMoneyPool(0);
+    }
+
+
+    public Player determineWinner() {
+        int[][] playerHands = new int[model.getNumberOfActivePlayers()][2];
+        for (int i = 0; i < model.getPlayersWhoHaveNotFolded().size(); i++) {
+            playerHands[i] = determineHand(model.getPlayersWhoHaveNotFolded().get(i).getHand());
+        }
+        //default winner to first player
+        int winnerIndex = 0;
+        //Look at each player after to compare
+        for (int i = 1; i < model.getPlayersWhoHaveNotFolded().size(); i++) {
+            //If observed player has higher score than current winning player, make observed player the new winning player
+            if(playerHands[i][0] > playerHands[winnerIndex][0]) winnerIndex = i;
+            //If the type of hands are the same, check the highest card value;
+            if(playerHands[i][0] == playerHands[winnerIndex][0]) {
+                if(playerHands[i][1] > playerHands[winnerIndex][1]) winnerIndex = i;
+            }
+            //in any other case, remain the same
+        }
+
+        //Get winning player
+        Player winner = model.getPlayersWhoHaveNotFolded().get(winnerIndex);
+
+        //Give winner all of the pool money
+        giveMoneyPool(winner);
+
+        return winner;
+    }
+
     //return a pain of integer values. First element is the hand ranking(flush) represented as an int (higher is better).
     //Second is the highest value in the hand ranking. This will be useful for tie breakers.
-    public int[] determineHand(Deck playerHand) {
+    public int[] determineHand(ObservableList<Card> playerHand) {
         int highestNumInHandRanking = containsRoyalFlush(playerHand);
         if(highestNumInHandRanking > 0) return new int[]{9, highestNumInHandRanking};
 
@@ -188,24 +223,24 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsRoyalFlush(Deck playerHand) {
+    private int containsRoyalFlush(ObservableList<Card>  playerHand) {
         if(cardsAreOfSameSuit(playerHand) && deckContainsStraight(playerHand) == 2) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsStraightFlush(Deck playerHand) {
+    private int containsStraightFlush(ObservableList<Card>  playerHand) {
         if(cardsAreOfSameSuit(playerHand) && deckContainsStraight(playerHand) > 0) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFourOfAKind(Deck playerHand) {
+    private int containsFourOfAKind(ObservableList<Card>  playerHand) {
         return findCardsOfSameRank(4, playerHand);
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFullHouse(Deck playerHand) {
+    private int containsFullHouse(ObservableList<Card>  playerHand) {
         int threeOfAKindRank = findCardsOfSameRank(3, playerHand);
         if(threeOfAKindRank == 0) return 0; //If first pair is never found, don't search for another
         int secondPairRank = findCardsOfSameRank(2, playerHand, threeOfAKindRank);
@@ -214,25 +249,25 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFlush(Deck playerHand) {
+    private int containsFlush(ObservableList<Card>  playerHand) {
         if(cardsAreOfSameSuit(playerHand)) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsStraight(Deck playerHand) {
+    private int containsStraight(ObservableList<Card>  playerHand) {
         //if deck has straight or special straight
         if(deckContainsStraight(playerHand) > 0) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsThreeOfAKind(Deck playerHand) {
+    private int containsThreeOfAKind(ObservableList<Card>  playerHand) {
         return findCardsOfSameRank(3, playerHand);
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsTwoPair(Deck playerHand) {
+    private int containsTwoPair(ObservableList<Card>  playerHand) {
         int foundPairRank = findCardsOfSameRank(2, playerHand);
         if(foundPairRank == 0) return 0; //If first pair is never found, don't search for another
         int secondPairRank = findCardsOfSameRank(2, playerHand, foundPairRank);
@@ -241,14 +276,14 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsOnePair(Deck playerHand) {
+    private int containsOnePair(ObservableList<Card>  playerHand) {
         return findCardsOfSameRank(2, playerHand);
     }
 
     //return highest number card in hand
-    private int findHighestCard(Deck playerHand) {
+    private int findHighestCard(ObservableList<Card>  playerHand) {
         int highestRank = 0;
-        for (Card card: playerHand.getCards()) {
+        for (Card card: playerHand) {
             if(card.getRank().getValue() > highestRank) highestRank = card.getRank().getValue();
         }
         return highestRank;
@@ -257,17 +292,17 @@ public class PokerEngine {
 
 
     //Overloaded method for when ignoreRank does not matter
-    private int findCardsOfSameRank(int numberOfCards, Deck playerHand) {
+    private int findCardsOfSameRank(int numberOfCards, ObservableList<Card>  playerHand) {
         return findCardsOfSameRank(numberOfCards, playerHand, -1);
     }
 
     //Pass in a value into the ignoreRank to ignore that rank when looking for cards of the same rank
-    private int findCardsOfSameRank(int numberOfCards, Deck playerHand, int ignoreRank) {
-        for(int i = 0; i < playerHand.getCards().size() -1; i++) {
-            int cardRank = playerHand.getCardAt(i).getRank().getValue(); //Get cardRank of observed card
+    private int findCardsOfSameRank(int numberOfCards, ObservableList<Card>  playerHand, int ignoreRank) {
+        for(int i = 0; i < playerHand.size() -1; i++) {
+            int cardRank = playerHand.get(i).getRank().getValue(); //Get cardRank of observed card
             int cardsOfAKind = 1;
-            for(int j = i+1; j < playerHand.getCards().size(); j++) {
-                if(cardRank == playerHand.getCardAt(j).getRank().getValue()) cardsOfAKind++;
+            for(int j = i+1; j < playerHand.size(); j++) {
+                if(cardRank == playerHand.get(j).getRank().getValue()) cardsOfAKind++;
             }
             //If the method found the right number of cards of a kind, it will return it
             if(cardsOfAKind >= numberOfCards && cardRank != ignoreRank) return cardRank;
@@ -277,9 +312,9 @@ public class PokerEngine {
     }
 
     //Return 0 if deck does not contain straight, 1 if there is a straight, and 2 if straight is (A K Q J 10)
-    private int deckContainsStraight(Deck playerHand) {
+    private int deckContainsStraight(ObservableList<Card>  playerHand) {
         //Make a shallow copy of the cards and sort them
-        ArrayList<Card> cards = (ArrayList<Card>) playerHand.getCards().clone();
+        ArrayList<Card> cards = (ArrayList<Card>)((ArrayList<Card>) playerHand).clone();
         Collections.sort(cards, new CardComparator());
         //Loop through cards and determine if they are in a straight (increment by 1)
         int numOfCardsInStraight = 1;
@@ -301,10 +336,10 @@ public class PokerEngine {
     }
 
     //Returns whether all of the cards in a deck are of the same suit
-    private boolean cardsAreOfSameSuit(Deck playerHand) {
-        ESuit suit = playerHand.getCardAt(0).getSuit();
-        for(int i = 1; i < playerHand.getCards().size(); i++) {
-            if(playerHand.getCardAt(i).getSuit() != suit) return false;
+    private boolean cardsAreOfSameSuit(ObservableList<Card>  playerHand) {
+        ESuit suit = playerHand.get(0).getSuit();
+        for(int i = 1; i < playerHand.size(); i++) {
+            if(playerHand.get(i).getSuit() != suit) return false;
         }
         return true;
     }

@@ -265,6 +265,15 @@ public class PokerScene {
 
         updatePlayerDisplays();
 
+        if(engine.getModel().getGameStage() == GameStage.BET) {
+            //if bet phase is over, check for winner
+            if(engine.checkIfBetPhaseIsOver()) {
+                StartTurnBtn.setText("Play Again");
+                Player winner = engine.determineWinner();
+                setText(winner.getName() + " is the winner!");
+            }
+        }
+
     }
 
 
