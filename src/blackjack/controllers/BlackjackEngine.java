@@ -1,5 +1,6 @@
 package blackjack.controllers;
 
+//region Imports
 import blackjack.presenters.BlackjackGameScene;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import models.Player;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//endregion
 public class BlackjackEngine {
     int numOfPlayers;
     Player[] players;
@@ -22,6 +24,7 @@ public class BlackjackEngine {
     FXMLLoader fxmlLoader;
     BlackjackGameScene blackjackGameScene;
 
+    //region Setup Methods
     public void setupGui() {
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("../views/blackjack-game-scene.fxml"));
@@ -64,6 +67,7 @@ public class BlackjackEngine {
 //            System.out.println("src url: " + imageView.getImage().getUrl());
 //        });
     }
+    //endregion
 
     /**
      * creates listeners to update display every time a player hand is changed
