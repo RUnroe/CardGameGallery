@@ -24,7 +24,6 @@ public class PokerEngine {
 
         //set initial data in the model
         model.setPlayerList(players);
-        model.resetPlayersWhoHaveNotFolded();
     }
 
     public PokerEngine(PokerModel model) {
@@ -34,7 +33,7 @@ public class PokerEngine {
 
 
     public void resetGame() {
-        model.resetPlayersWhoHaveNotFolded();
+        model.resetPlayerHasFolded();
         model.resetDeck();
         //Dont know if this will work properly yet
         model.clearPlayersHands();
@@ -118,7 +117,7 @@ public class PokerEngine {
 
     public void fold() {
         model.foldPlayerByIndex(getModel().getCurrentPlayerIndex());
-        model.switchTurn(0);
+        model.switchTurn();
 //        checkIfBetPhaseIsOver();
     }
     public void call() {

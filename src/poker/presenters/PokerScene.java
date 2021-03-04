@@ -241,7 +241,9 @@ public class PokerScene {
         else {
             //End of game. Reset game on next btn click
             resetGame();
+            updatePlayerDisplays();
         }
+        System.out.println(engine.getModel().getNumberOfActivePlayers());
     }
     private void anteUp() {
         //engine ante up
