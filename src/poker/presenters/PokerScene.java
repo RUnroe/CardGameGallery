@@ -184,6 +184,7 @@ public class PokerScene {
                 displayPlayer(engine.getModel().getNextPlayer(3), 3);
                 break;
         }
+
     }
 
     private void displayPlayer(Player player, int positionIndex) {
@@ -192,6 +193,7 @@ public class PokerScene {
         //Make name and balance output visible
         nameDisplayArray[positionIndex].setVisible(true);
         balanceDisplayArray[positionIndex].setVisible(true);
+
 
         nameDisplayArray[positionIndex].setText(player.getName());
         balanceDisplayArray[positionIndex].setText("$" + player.getBank());

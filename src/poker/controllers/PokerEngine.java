@@ -78,7 +78,7 @@ public class PokerEngine {
     public void putMoneyInPool(int amount) {
         //Remove money from player and put in money pool
         //Players can only bet up to $1000 past their current bank
-        if(amount < (model.getCurrentPlayer().getBank() + 1000)) {
+        if(amount <= (model.getCurrentPlayer().getBank() + 1000)+1) {
             //Remove money from player
             model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - amount);
             //Add money to pool
@@ -132,9 +132,11 @@ public class PokerEngine {
 //        checkIfBetPhaseIsOver();
     }
     public void goAllIn() {
-
+        //1000 is how much extra a player can bet past their balance
+        int maxAmount = 1000 + ((int) model.getCurrentPlayer().getBank());
+        putMoneyInPool(maxAmount);
         model.switchTurn();
-//        checkIfBetPhaseIsOver();
+
     }
 
     public boolean checkIfBetPhaseIsOver() {
