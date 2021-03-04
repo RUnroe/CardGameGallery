@@ -213,6 +213,21 @@ public class PokerScene {
         endOfTurn();
         setText("Discarded! \nNext up is " + engine.getModel().getCurrentPlayer().getName() );
     }
+    private void resetGame() {
+        engine.resetGame();
+        updateBankDisplay();
+        updateBetDisplay();
+        //clear card container
+        CurrPlayerHandContainer.getChildren().clear();
+        showDiscardBtn(false);
+        showBetRaiseBtns(false);
+        //disable all control buttons
+        showControlBtns(new boolean[]{false, false, false, false, false});
+
+        //show Ante up btn
+        StartTurnBtn.setText("Ante Up");
+        StartTurnBtn.setVisible(true);
+    }
 
     public void playTurn(ActionEvent actionEvent) {
         if(StartTurnBtn.getText().equals("Ante Up")) {
@@ -220,8 +235,12 @@ public class PokerScene {
             engine.distributeCards();
             engine.getModel().setGameStage(GameStage.DISCARD);
         }
-        else {
+        else if(StartTurnBtn.getText().equals("Start Turn")) {
             startOfTurn();
+        }
+        else {
+            //End of game. Reset game on next btn click
+            resetGame();
         }
     }
     private void anteUp() {
@@ -262,7 +281,6 @@ public class PokerScene {
         //show next turn btn
         StartTurnBtn.setVisible(true);
 
-        updatePlayerDisplays();
 
         if(engine.getModel().getGameStage() == GameStage.BET) {
             //if bet phase is over, check for winner
@@ -272,6 +290,8 @@ public class PokerScene {
                 setText(winner.getName() + " is the winner!");
             }
         }
+
+        updatePlayerDisplays();
 
     }
 
