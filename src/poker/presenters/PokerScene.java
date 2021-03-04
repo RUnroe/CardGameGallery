@@ -199,7 +199,14 @@ public class PokerScene {
         balanceDisplayArray[positionIndex].setText("$" + player.getBank());
     }
 
-
+    private void clearPlayerDisplays() {
+        Label[] nameDisplayArray = new Label[]{CurrPlayerNameDisplay, LeftPlayerNameDisplay, MidPlayerNameDisplay, RightPlayerNameDisplay};
+        Label[] balanceDisplayArray = new Label[]{CurrPlayerBalanceDisplay, LeftPlayerBalanceDisplay, MidPlayerBalanceDisplay, RightPlayerBalanceDisplay};
+        for(int i = 0; i < nameDisplayArray.length; i++) {
+            nameDisplayArray[i].setText("");
+            balanceDisplayArray[i].setText("");
+        }
+    }
     public void setBetRaiseValue(ActionEvent actionEvent) {
         //Make sure the buttons only do something when in the bet stage
         if(engine.getModel().getGameStage() == GameStage.BET) {
@@ -232,9 +239,17 @@ public class PokerScene {
         //disable all control buttons
         showControlBtns(new boolean[]{false, false, false, false, false});
 
+        clearPlayerDisplays();
+
         //show Ante up btn
         StartTurnBtn.setText("Ante Up");
         StartTurnBtn.setVisible(true);
+
+        //Detect if game has enough players to keep going
+        if(engine.getModel().getPlayerList().size() < 2) {
+            StartTurnBtn.setDisable(true);
+            setText("Game is over!");
+        }
     }
 
     public void playTurn(ActionEvent actionEvent) {

@@ -35,7 +35,6 @@ public class PokerEngine {
     public void resetGame() {
         model.resetPlayerHasFolded();
         model.resetDeck();
-        //Dont know if this will work properly yet
         model.clearPlayersHands();
         model.setMoneyPool(0);
         model.setRaiseAmount(0);
@@ -44,8 +43,20 @@ public class PokerEngine {
         model.setLastPlayerToRaise(-1);
         model.setGameStage(GameStage.ANTE);
         model.setInBetPhase(true);
+
+        removePlayersInDebt();
     }
 
+    private void removePlayersInDebt() {
+        int limit = -500;
+        for (int i = 0; i < model.getPlayerList().size(); i++) {
+            if(model.getPlayerList().get(i).getBank() <= limit) {
+                model.getPlayerList().remove(i);
+                //Since player is getting removed from the list that we are evaluating, stay at same index
+                i--;
+            }
+        }
+    }
 
     public void anteUp() {
         for (Player player: model.getPlayerList()) {
