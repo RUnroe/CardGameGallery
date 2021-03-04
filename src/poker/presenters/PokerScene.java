@@ -205,6 +205,12 @@ public class PokerScene {
         if(engine.getModel().getGameStage() == GameStage.BET) {
             //Get value out of button
             int selectedAmount = Integer.parseInt(((Button) actionEvent.getSource()).getId().split("Dollar")[1]);
+            if(engine.getModel().getCurrentBet() == 0) {
+                setText(engine.getModel().getCurrentPlayer().getName() + " bet $" + selectedAmount);
+            } else {
+                setText(engine.getModel().getCurrentPlayer().getName() + " raised by $" + selectedAmount);
+            }
+
             engine.placeBet(selectedAmount);
             endOfTurn();
         }
@@ -245,7 +251,6 @@ public class PokerScene {
             resetGame();
             updatePlayerDisplays();
         }
-        System.out.println(engine.getModel().getNumberOfActivePlayers());
     }
     private void anteUp() {
         //engine ante up
@@ -427,20 +432,20 @@ public class PokerScene {
     }
 
     public void allInTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " went all in!");
         engine.goAllIn();
         endOfTurn();
     }
 
     public void foldTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " folded");
         engine.fold();
         endOfTurn();
 
     }
 
     public void callTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " called");
         engine.call();
         endOfTurn();
 
