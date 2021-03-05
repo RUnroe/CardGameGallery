@@ -4,9 +4,10 @@ import models.Card;
 import models.Deck;
 import models.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PokerModel {
+public class PokerModel implements Serializable {
 
 
     private ArrayList<Player> playerList = new ArrayList<>();

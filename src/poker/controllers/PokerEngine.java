@@ -6,13 +6,16 @@ import models.*;
 import poker.models.GameStage;
 import poker.models.PokerModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class PokerEngine {
     private int bankInitValue = 100;
 
-    private PokerModel model = new PokerModel();
+    private PokerModel model;
 
 
     public PokerEngine(ArrayList<Player> players) {
@@ -20,7 +23,7 @@ public class PokerEngine {
         for (Player player: players) {
             player.setBank(bankInitValue);
         }
-
+        model = new PokerModel();
 
         //set initial data in the model
         model.setPlayerList(players);
@@ -30,7 +33,19 @@ public class PokerEngine {
         this.model = model;
     }
 
-
+    public void saveBoard(File file) {
+        try {
+            file.createNewFile();
+            FileOutputStream f = new FileOutputStream(file, false);
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            o.writeObject(model);
+            o.close();
+            f.close();
+            System.out.println(file);
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
     public void resetGame() {
         model.resetPlayerHasFolded();
