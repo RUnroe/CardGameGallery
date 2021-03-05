@@ -115,6 +115,8 @@ public class PokerScene {
             f.close();
             o.close();
             engine = new PokerEngine(e);
+            //change scene to game scene
+            changeScene((Stage) CreateGameBtn.getScene().getWindow(), "../views/poker-game-scene.fxml");
         } catch (Exception e){
             System.out.println(e);
         }
@@ -313,9 +315,19 @@ public class PokerScene {
 
     public void playTurn(ActionEvent actionEvent) {
         if(StartTurnBtn.getText().equals("Ante Up")) {
-            anteUp();
-            engine.distributeCards();
-            engine.getModel().setGameStage(GameStage.DISCARD);
+            if(engine.getModel().getGameStage() == GameStage.ANTE) {
+                anteUp();
+                engine.distributeCards();
+                engine.getModel().setGameStage(GameStage.DISCARD);
+            }
+            else {
+                endOfTurn();
+                //update display
+                updatePlayerDisplays();
+                updateBankDisplay();
+                //change button
+                StartTurnBtn.setText("Start Turn");
+            }
         }
         else if(StartTurnBtn.getText().equals("Start Turn")) {
             startOfTurn();
