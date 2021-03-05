@@ -31,7 +31,8 @@ public class EngineOfWar {
         model.setupTable();
         Deck deck = new Deck(1);
         System.out.println(deck.getCards().size());
-        int deckSize = ((ArrayList<Card>) deck.getCards().clone()).size();
+//        int deckSize = ((ArrayList<Card>) deck.getCards().clone()).size();
+        int deckSize = ((ArrayList<?>) deck.getCards().clone()).size();
         for (int i = 0; i < deckSize; i++) {
             //Splits the deck between players
             try {
