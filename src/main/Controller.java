@@ -1,4 +1,4 @@
-package sample;
+package main;
 
 import blackjack.controllers.BlackjackEngine;
 import javafx.event.ActionEvent;

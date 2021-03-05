@@ -12,22 +12,23 @@ public class Player implements Serializable {
     private int score;
     private boolean isPlayerAI = false;
     private double bank;
-    private ObservableList<Card> hand;
+    private List<Card> hand;
 
     public Player(String name, int score) {
         this.name = name;
         this.score = score;
+        this.hand = new ArrayList<>();
     }
 
     public Player(String name, double initialBankAmount) {
         this.name = name;
         this.bank = initialBankAmount;
-        this.hand = FXCollections.observableArrayList();
+        this.hand = new ArrayList<>();
     }
 
     public Player(String name) {
         this.name = name;
-        this.hand = FXCollections.observableArrayList();
+        this.hand = new ArrayList<>();
     }
 
     public String getName() {
@@ -58,17 +59,17 @@ public class Player implements Serializable {
         this.bank = bank;
     }
 
-    public ObservableList<Card> getHand() {
+    public List<Card> getHand() {
         return hand;
     }
 
-    public void setHand(ObservableList<Card> hand) {
+    public void setHand(List<Card> hand) {
         this.hand = hand;
     }
 
-    public void setHand(List<Card> hand) {
-        this.hand = FXCollections.observableArrayList(hand);
-    }
+//    public void setHand(List<Card> hand) {
+//        this.hand = FXCollections.observableArrayList(hand);
+//    }
 
     public void addToHand(Card card) {
         hand.add(card);

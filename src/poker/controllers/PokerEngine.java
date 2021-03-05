@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class PokerEngine {
     private int bankInitValue = 100;
@@ -242,7 +243,7 @@ public class PokerEngine {
 
     //return a pain of integer values. First element is the hand ranking(flush) represented as an int (higher is better).
     //Second is the highest value in the hand ranking. This will be useful for tie breakers.
-    public int[] determineHand(ObservableList<Card> playerHand) {
+    public int[] determineHand(List<Card> playerHand) {
         int highestNumInHandRanking = containsRoyalFlush(playerHand);
         if(highestNumInHandRanking > 0) return new int[]{9, highestNumInHandRanking};
 
@@ -276,24 +277,24 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsRoyalFlush(ObservableList<Card>  playerHand) {
+    private int containsRoyalFlush(List<Card> playerHand) {
         if(cardsAreOfSameSuit(playerHand) && deckContainsStraight(playerHand) == 2) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsStraightFlush(ObservableList<Card>  playerHand) {
+    private int containsStraightFlush(List<Card>  playerHand) {
         if(cardsAreOfSameSuit(playerHand) && deckContainsStraight(playerHand) > 0) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFourOfAKind(ObservableList<Card>  playerHand) {
+    private int containsFourOfAKind(List<Card>  playerHand) {
         return findCardsOfSameRank(4, playerHand);
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFullHouse(ObservableList<Card>  playerHand) {
+    private int containsFullHouse(List<Card>  playerHand) {
         int threeOfAKindRank = findCardsOfSameRank(3, playerHand);
         if(threeOfAKindRank == 0) return 0; //If first pair is never found, don't search for another
         int secondPairRank = findCardsOfSameRank(2, playerHand, threeOfAKindRank);
@@ -302,25 +303,25 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsFlush(ObservableList<Card>  playerHand) {
+    private int containsFlush(List<Card>  playerHand) {
         if(cardsAreOfSameSuit(playerHand)) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsStraight(ObservableList<Card>  playerHand) {
+    private int containsStraight(List<Card>  playerHand) {
         //if deck has straight or special straight
         if(deckContainsStraight(playerHand) > 0) return findHighestCard(playerHand);
         return 0;
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsThreeOfAKind(ObservableList<Card>  playerHand) {
+    private int containsThreeOfAKind(List<Card>  playerHand) {
         return findCardsOfSameRank(3, playerHand);
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsTwoPair(ObservableList<Card>  playerHand) {
+    private int containsTwoPair(List<Card>  playerHand) {
         int foundPairRank = findCardsOfSameRank(2, playerHand);
         if(foundPairRank == 0) return 0; //If first pair is never found, don't search for another
         int secondPairRank = findCardsOfSameRank(2, playerHand, foundPairRank);
@@ -329,12 +330,12 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsOnePair(ObservableList<Card>  playerHand) {
+    private int containsOnePair(List<Card>  playerHand) {
         return findCardsOfSameRank(2, playerHand);
     }
 
     //return highest number card in hand
-    private int findHighestCard(ObservableList<Card>  playerHand) {
+    private int findHighestCard(List<Card>  playerHand) {
         int highestRank = 0;
         for (Card card: playerHand) {
             if(card.getRank().getValue() > highestRank) highestRank = card.getRank().getValue();
@@ -345,12 +346,12 @@ public class PokerEngine {
 
 
     //Overloaded method for when ignoreRank does not matter
-    private int findCardsOfSameRank(int numberOfCards, ObservableList<Card>  playerHand) {
+    private int findCardsOfSameRank(int numberOfCards, List<Card>  playerHand) {
         return findCardsOfSameRank(numberOfCards, playerHand, -1);
     }
 
     //Pass in a value into the ignoreRank to ignore that rank when looking for cards of the same rank
-    private int findCardsOfSameRank(int numberOfCards, ObservableList<Card>  playerHand, int ignoreRank) {
+    private int findCardsOfSameRank(int numberOfCards, List<Card>  playerHand, int ignoreRank) {
         for(int i = 0; i < playerHand.size() -1; i++) {
             int cardRank = playerHand.get(i).getRank().getValue(); //Get cardRank of observed card
             int cardsOfAKind = 1;
@@ -365,10 +366,10 @@ public class PokerEngine {
     }
 
     //Return 0 if deck does not contain straight, 1 if there is a straight, and 2 if straight is (A K Q J 10)
-    private int deckContainsStraight(ObservableList<Card>  playerHand) {
+    private int deckContainsStraight(List<Card>  playerHand) {
         //Make a shallow copy of the cards and sort them
         //ArrayList<Card> cards = (ArrayList<Card>)((ArrayList<Card>) playerHand).clone();
-        ObservableList<Card> cards = playerHand;
+        List<Card> cards = playerHand;
         Collections.sort(cards, new CardComparator());
         //Loop through cards and determine if they are in a straight (increment by 1)
         int numOfCardsInStraight = 1;
@@ -390,7 +391,7 @@ public class PokerEngine {
     }
 
     //Returns whether all of the cards in a deck are of the same suit
-    private boolean cardsAreOfSameSuit(ObservableList<Card>  playerHand) {
+    private boolean cardsAreOfSameSuit(List<Card>  playerHand) {
         ESuit suit = playerHand.get(0).getSuit();
         for(int i = 1; i < playerHand.size(); i++) {
             if(playerHand.get(i).getSuit() != suit) return false;
