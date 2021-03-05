@@ -185,6 +185,19 @@ public class PokerEngine {
     }
 
 
+    public boolean makeAiTurn() {
+        //If ai has a hand with something more than just a high card, call
+        if(determineHand(model.getCurrentPlayer().getHand())[0] > 0) {
+            call();
+            return true;
+        }
+        else {
+            fold();
+            return false;
+        }
+    }
+
+
     public Player determineWinner() {
         int[][] playerHands = new int[model.getNumberOfActivePlayers()][2];
         for (int i = 0; i < model.getPlayersWhoHaveNotFolded().size(); i++) {

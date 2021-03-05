@@ -302,6 +302,7 @@ public class PokerScene {
         //disable all control buttons
         showControlBtns(new boolean[]{false, false, false, false, false});
 
+
         //show next turn btn
         StartTurnBtn.setVisible(true);
 
@@ -316,7 +317,27 @@ public class PokerScene {
         }
 
         updatePlayerDisplays();
+        makeAiMove();
+    }
 
+    private void makeAiMove() {
+        //if ai is next, make turn
+        if(engine.getModel().getCurrentPlayer().isPlayerAI()) {
+            //Make move if in betting phase
+            if(engine.getModel().getGameStage() == GameStage.BET) {
+                if(engine.makeAiTurn()) {
+                    setText("House called");
+                }
+                else {
+                    setText("House folded");
+                }
+            }
+            //skip turn if not in betting phase (draw/discard phase)
+            else {
+                engine.discardCards();
+            }
+            endOfTurn();
+        }
     }
 
 
