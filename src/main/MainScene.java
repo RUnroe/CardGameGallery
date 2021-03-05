@@ -38,7 +38,7 @@ public class MainScene {
 
     //region Button Click Event Handlers
     public void onActionBtnPlayBlackjack(ActionEvent actionEvent) {
-        new BlackjackEngine().setup();
+        new BlackjackEngine().setup(getStage());
     }
 
     public void onActionBtnPlayPoker(ActionEvent actionEvent) {

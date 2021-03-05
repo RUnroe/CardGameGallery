@@ -18,6 +18,13 @@ public class Player {
         this.score = score;
     }
 
+    public Player(String name, double initialBankAmount, boolean isPlayerAI) {
+        this.name = name;
+        this.bank = initialBankAmount;
+        this.hand = FXCollections.observableArrayList();
+        this.isPlayerAI = isPlayerAI;
+    }
+
     public Player(String name, double initialBankAmount) {
         this.name = name;
         this.bank = initialBankAmount;
@@ -100,5 +107,9 @@ public class Player {
 
     public void setPlayerAI(boolean playerAI) {
         isPlayerAI = playerAI;
+    }
+
+    public int getHandTotal() {
+        return getHand().stream().mapToInt(Card::getRankValue).sum();
     }
 }

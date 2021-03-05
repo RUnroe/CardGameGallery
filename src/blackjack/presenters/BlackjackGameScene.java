@@ -1,9 +1,14 @@
 package blackjack.presenters;
 
+import blackjack.controllers.BlackjackEngine;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import models.Player;
 
 import java.util.ArrayList;
@@ -29,6 +34,13 @@ public class BlackjackGameScene {
     public Label lblPlayerThreeName;
     public Label lblPlayerFourName;
     public Label lblPlayerFiveName;
+    public ButtonBar btnBarHitOrStay;
+    public Button btnHit;
+    public Button btnStay;
+
+    Stage stage;
+    BlackjackEngine engine;
+
 
     public void exampleDisplayHand(Player player) {
         AtomicInteger translation = new AtomicInteger(0);
@@ -53,5 +65,40 @@ public class BlackjackGameScene {
             }
         });
         return imageViews;
+    }
+
+    public void setPlayerNames() {
+        Label[] playerLabels = new Label[] {lblPlayerOneName, lblPlayerTwoName, lblPlayerThreeName, lblPlayerFourName, lblPlayerFiveName};
+        for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
+            playerLabels[playerNum].setText(getEngine().getPlayers()[playerNum].getName());
+        }
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public BlackjackEngine getEngine() {
+        return engine;
+    }
+
+    public void setEngine(BlackjackEngine engine) {
+        this.engine = engine;
+    }
+
+    public HBox[] getPlayerHandHBoxs() {
+        return new HBox[] {hBoxPlayerOneHand, hBoxPlayerTwoHand, hBoxPlayerThreeHand, hBoxPlayerFourHand, hBoxPlayerFiveHand};
+    }
+
+    public void onActionBtnHit(ActionEvent actionEvent) {
+        engine.handleHit();
+    }
+
+    public void onActionBtnStay(ActionEvent actionEvent) {
+        engine.handleStay();
     }
 }

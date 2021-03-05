@@ -11,6 +11,7 @@ public class Card {
     private final ERank rank;
     private final ESuit suit;
     private final ImageView imageView;
+    private final ImageView imageViewBack;
     private boolean isFlipped;
 
     public Card(ERank rank, ESuit suit) {
@@ -18,6 +19,7 @@ public class Card {
         this.suit = suit;
         this.name = getRankAsString() + " of " + getSuitAsString();
         this.imageView = loadImageViewFromPath("/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png");
+        this.imageViewBack = loadImageViewFromPath("/images/cards/PNG/Card_Back.png");
 //        String url = "src/resources/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png";
 //        this.imageView = loadImageViewFromPath(url);
 //        setupImageView();
@@ -76,7 +78,11 @@ public class Card {
     }
 
     public ImageView getImageView() {
-        return imageView;
+        return isFlipped() ? imageView : imageViewBack;
+    }
+
+    public ImageView getImageViewBack() {
+        return imageViewBack;
     }
 
     private Image loadImageFromPath(String path) {
