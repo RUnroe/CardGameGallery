@@ -1,6 +1,9 @@
 package blackjack.presenters;
 
 import blackjack.controllers.BlackjackEngine;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -9,9 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import models.Card;
 import models.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,6 +45,10 @@ public class BlackjackGameScene {
 
     Stage stage;
     BlackjackEngine engine;
+
+    List<ObservableList<Card>> playerHands;
+    ObservableList<Card> houseHand;
+    List<Label> playerNames;
 
 
     public void exampleDisplayHand(Player player) {
@@ -100,5 +109,116 @@ public class BlackjackGameScene {
 
     public void onActionBtnStay(ActionEvent actionEvent) {
         engine.handleStay();
+    }
+
+    /**
+     * creates listeners to update display every time a player hand is changed
+     * only call if blackjack-game-scene.fxml is loaded
+     */
+    public void setupObservableHandsWithListeners() {
+        if (playerHands == null) {
+            playerHands = new ArrayList<>();
+        }
+        Arrays.stream(getEngine().getPlayers()).forEach(player -> playerHands.add(FXCollections.observableArrayList(player.getHand())));
+        addListenersToEachPlayerHand();
+        houseHand = FXCollections.observableArrayList(getEngine().getHouse().getHand());
+        addListenerToHouseHand();
+    }
+
+    private void addListenersToEachPlayerHand() {
+        playerHands.forEach(hand -> hand.addListener((ListChangeListener<Card>)change ->
+                updateHboxOnListChange(change, getPlayerHandHBoxs()[playerHands.indexOf(hand)])));
+
+//            for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
+//                HBox hBoxOfCurrentPlayer = blackjackGameScene.getPlayerHandHBoxs()[playerNum];
+//                players[playerNum].getHand().addListener((ListChangeListener<Card>) change -> {
+////                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+////                    ObservableList<Node> playerFieldChildren = blackjackGameScene.anchorPanePlayerField.getChildren();
+////                    if (playerFieldChildren.get(finalI) instanceof HBox) { // checks for HBox before casting
+////                        HBox hBoxOfCurrentPlayer = (HBox) playerFieldChildren.get(finalI);
+//                        updateHboxOnListChange(change, hBoxOfCurrentPlayer);
+////                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
+////                    }
+////                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
+//                });
+////            rotateCardsInHand(i);
+//            }
+
+    }
+
+    private void addListenerToHouseHand() {
+//        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+                getHouseHand().addListener((ListChangeListener<Card>) change -> {
+//                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+//                    HBox hBoxHouseHand = blackjackGameScene.hBoxHouseHand;
+                     // checks for HBox before casting
+                    updateHboxOnListChange(change, getHBoxHouseHand());
+//                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
+
+//                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
+                });
+//            rotateCardsInHand(i);
+//            }
+
+    }
+
+    private void updateHboxOnListChange(ListChangeListener.Change<? extends Card> change, HBox hBox) {
+        while (change.next()) { // checks for change
+            if (change.wasAdded()) { // checks for additions to the hand
+                change.getAddedSubList().forEach(card -> {
+                    hBox.getChildren().add(card.getImageView()); // adds cards to display
+                });
+            } else if (change.wasRemoved()) { // checks for removal from hand
+                change.getAddedSubList().forEach(card -> {
+                    hBox.getChildren().remove(card.getImageView()); // removes cards from display
+                });
+            } else if (change.wasPermutated()) {
+                hBox.getChildren().clear();
+                change.getList().forEach(card -> {
+                    hBox.getChildren().add(card.getImageView()); // adds cards to display
+                });
+            }
+        }
+    }
+
+    public HBox getHBoxHouseHand() {
+        return hBoxHouseHand;
+    }
+
+    public void setHBoxHouseHand(HBox hBoxHouseHand) {
+        this.hBoxHouseHand = hBoxHouseHand;
+    }
+
+    public void highlightCurrentPlayerName(int currentPlayerIndex) {
+        if (playerNames == null) {
+            createPlayerNamesList();
+        }
+        int previousPlayerIndex = currentPlayerIndex - 1 < 0 ? getEngine().getPlayers().length : currentPlayerIndex - 1;
+
+        if (previousPlayerIndex == getEngine().getPlayers().length) {
+        lblHouseName.setStyle("-fx-border-color: transparent");
+        } else {
+        playerNames.get(previousPlayerIndex).setStyle("-fx-border-color: transparent");
+        }
+        if (currentPlayerIndex == getEngine().getPlayers().length) {
+            lblHouseName.setStyle("-fx-border-color: orange");
+        } else {
+            playerNames.get(currentPlayerIndex).setStyle("-fx-border-color: orange");
+        }
+    }
+
+    private void createPlayerNamesList() {
+        playerNames = new ArrayList<>(Arrays.asList(
+                lblPlayerOneName, lblPlayerTwoName, lblPlayerThreeName, lblPlayerFourName, lblPlayerFiveName));
+        playerNames.forEach(name -> name.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5"));
+        lblHouseName.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5");
+    }
+
+    public ObservableList<Card> getHouseHand() {
+        return houseHand;
+    }
+
+    public void setHouseHand(ObservableList<Card> houseHand) {
+        this.houseHand = houseHand;
     }
 }

@@ -11,7 +11,7 @@ public class Player {
     private int score;
     private boolean isPlayerAI = false;
     private double bank;
-    private ObservableList<Card> hand;
+    private List<Card> hand;
 
     public Player(String name, int score) {
         this.name = name;
@@ -64,17 +64,17 @@ public class Player {
         this.bank = bank;
     }
 
-    public ObservableList<Card> getHand() {
+    public List<Card> getHand() {
         return hand;
     }
 
-    public void setHand(ObservableList<Card> hand) {
+    public void setHand(List<Card> hand) {
         this.hand = hand;
     }
 
-    public void setHand(List<Card> hand) {
-        this.hand = FXCollections.observableArrayList(hand);
-    }
+//    public void setHand(List<Card> hand) {
+//        this.hand = FXCollections.observableArrayList(hand);
+//    }
 
     public void addToHand(Card card) {
         hand.add(card);
@@ -92,7 +92,7 @@ public class Player {
         }
     }
 
-    public void drawFromDeck(Deck deck) {
+    public Card drawFromDeck(Deck deck) {
         int topOfDeckIndex = deck.getCards().size() - 1;
         Card card = deck.getTopCard();
         if (hand == null) {
@@ -100,6 +100,7 @@ public class Player {
         }
         hand.add(card);
         deck.removeTopCard();
+        return card;
     }
     public boolean isPlayerAI() {
         return isPlayerAI;

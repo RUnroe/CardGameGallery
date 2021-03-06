@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import models.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -46,22 +47,21 @@ public class BlackjackEngine {
         getStage().setY(getStage().getY() - 20);
         changeScene(GAME_PATH);
         if (fxmlLoader.getController() instanceof BlackjackGameScene) {
-            setupEngine();
             BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
             blackjackGameScene.setStage(getStage());
             blackjackGameScene.setEngine(this);
             blackjackGameScene.setPlayerNames();
+            blackjackGameScene.setupObservableHandsWithListeners();
+            setupEngine();
+            blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
         }
     }
 
     public void setupEngine() {
-        if (house == null) {
-            house = new Player("House", Double.MAX_VALUE, true);
-        }
-        addListenersToEachPlayerHand();
-        addListenerToHouseHand();
+//        addListenersToEachPlayerHand();
+//        addListenerToHouseHand();
         setDeck(new Deck(1));
-        setupStartingHands(getDeck());
+        setupStartingHands();
 //        for (int i = 0; i < numOfPlayers; i++) {
 //            if (players[i] == null) {
 //                players[i] = new Player("Player " + i, 20.00);
@@ -87,72 +87,88 @@ public class BlackjackEngine {
      * creates listeners to update display every time a player hand is changed
      * only call if blackjack-game-scene.fxml is loaded
      */
-    private void addListenersToEachPlayerHand() {
-        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
-            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
-            for (int playerNum = 0; playerNum < players.length; playerNum++) {
-                HBox hBoxOfCurrentPlayer = blackjackGameScene.getPlayerHandHBoxs()[playerNum];
-                players[playerNum].getHand().addListener((ListChangeListener<Card>) change -> {
+//    private void addListenersToEachPlayerHand() {
+//        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+//            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+//            for (int playerNum = 0; playerNum < players.length; playerNum++) {
+//                HBox hBoxOfCurrentPlayer = blackjackGameScene.getPlayerHandHBoxs()[playerNum];
+//                players[playerNum].getHand().addListener((ListChangeListener<Card>) change -> {
+////                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+////                    ObservableList<Node> playerFieldChildren = blackjackGameScene.anchorPanePlayerField.getChildren();
+////                    if (playerFieldChildren.get(finalI) instanceof HBox) { // checks for HBox before casting
+////                        HBox hBoxOfCurrentPlayer = (HBox) playerFieldChildren.get(finalI);
+//                        updateHboxOnListChange(change, hBoxOfCurrentPlayer);
+////                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
+////                    }
+////                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
+//                });
+////            rotateCardsInHand(i);
+//            }
+//        }
+//    }
+
+//    private void addListenerToHouseHand() {
+//        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+//                house.getHand().addListener((ListChangeListener<Card>) change -> {
 //                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
-//                    ObservableList<Node> playerFieldChildren = blackjackGameScene.anchorPanePlayerField.getChildren();
-//                    if (playerFieldChildren.get(finalI) instanceof HBox) { // checks for HBox before casting
-//                        HBox hBoxOfCurrentPlayer = (HBox) playerFieldChildren.get(finalI);
-                        updateHboxOnListChange(change, hBoxOfCurrentPlayer);
-//                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
-//                    }
-//                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
-                });
-//            rotateCardsInHand(i);
-            }
-        }
-    }
+//                    HBox hBoxHouseHand = blackjackGameScene.hBoxHouseHand;
+//                     // checks for HBox before casting
+//                    updateHboxOnListChange(change, hBoxHouseHand);
+////                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
+//
+////                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
+//                });
+////            rotateCardsInHand(i);
+//            }
+//
+//    }
 
-    private void addListenerToHouseHand() {
-        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
-                house.getHand().addListener((ListChangeListener<Card>) change -> {
-                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
-                    HBox hBoxHouseHand = blackjackGameScene.hBoxHouseHand;
-                     // checks for HBox before casting
-                    updateHboxOnListChange(change, hBoxHouseHand);
-//                        hBoxOfCurrentPlayer.getChildren().forEach(node -> System.out.println("Node: " + node));
+//    private void updateHboxOnListChange(ListChangeListener.Change<? extends Card> change, HBox hBox) {
+//        while (change.next()) { // checks for change
+//            if (change.wasAdded()) { // checks for additions to the hand
+//                change.getAddedSubList().forEach(card -> {
+//                    hBox.getChildren().add(card.getImageView()); // adds cards to display
+//                });
+//            } else if (change.wasRemoved()) { // checks for removal from hand
+//                change.getAddedSubList().forEach(card -> {
+//                    hBox.getChildren().remove(card.getImageView()); // removes cards from display
+//                });
+//            } else if (change.wasPermutated()) {
+//                hBox.getChildren().clear();
+//                change.getList().forEach(card -> {
+//                    hBox.getChildren().add(card.getImageView()); // adds cards to display
+//                });
+//            }
+//        }
+//    }
 
-//                    blackjackGameScene.hBoxPlayerOneHand.getChildren().forEach(System.out::println);
-                });
-//            rotateCardsInHand(i);
-            }
-
-    }
-
-    private void updateHboxOnListChange(ListChangeListener.Change<? extends Card> change, HBox hBox) {
-        while (change.next()) { // checks for change
-            if (change.wasAdded()) { // checks for additions to the hand
-                change.getAddedSubList().forEach(card -> {
-                    hBox.getChildren().add(card.getImageView()); // adds cards to display
-                });
-            } else if (change.wasRemoved()) { // checks for removal from hand
-                change.getAddedSubList().forEach(card -> {
-                    hBox.getChildren().remove(card.getImageView()); // removes cards from display
-                });
-            } else if (change.wasPermutated()) {
-                hBox.getChildren().clear();
-                change.getList().forEach(card -> {
-                    hBox.getChildren().add(card.getImageView()); // adds cards to display
-                });
-            }
-        }
-    }
-
-    private void setupStartingHands(Deck deck) {
+    private void setupStartingHands() {
         for (int numOfInitialCards = 0; numOfInitialCards < 2; numOfInitialCards++) {
-            drawOnceForAllHands(deck);
+            drawOnceForAllHands();
         }
         sortAllHands();
         flipAllCardsExceptHoleCard();
     }
 
-    private void drawOnceForAllHands(Deck deck) {
-        Arrays.stream(players).forEach(player -> player.drawFromDeck(deck));
-        house.drawFromDeck(deck);
+    private void drawOnceForAllHands() {
+        Arrays.stream(players).forEach(this::drawAndUpdateObservableHand);
+        drawAndUpdateObservableHand(house);
+    }
+
+    private Card drawAndUpdateObservableHand(Player player) {
+        Card card = player.drawFromDeck(getDeck());
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            if (!player.equals(getHouse())) {
+                // gets the hbox from a list at the same index as the player in the players list,
+                // and adds the new card's image view as a child
+                blackjackGameScene.getPlayerHandHBoxs()[Arrays.stream(players).collect(Collectors.toList())
+                        .indexOf(player)].getChildren().add(card.getImageView());
+            } else {
+                blackjackGameScene.getHBoxHouseHand().getChildren().add(card.getImageView());
+            }
+        }
+        return card;
     }
 
     private void flipCardAndUpdateDisplay(Player player, int cardIndex) {
@@ -180,6 +196,7 @@ public class BlackjackEngine {
     private void flipAllCardsExceptHoleCard() {
         Arrays.stream(players).forEach(player -> player.getHand().forEach(card -> flipCardAndUpdateDisplay(player, card)));
         flipCardAndUpdateDisplay(house, 0);
+//        flipCardAndUpdateDisplay(house, 0);
     }
 
     private void sortAllHands() {
@@ -256,8 +273,10 @@ public class BlackjackEngine {
     }
 
     public void handleHit() {
-        Player currentPlayer = players[getCurrentPlayerIndex()];
-        currentPlayer.drawFromDeck(getDeck());
+        int index = getCurrentPlayerIndex();
+        Player currentPlayer = index < players.length ? players[index] : house;
+        Card newCard = drawAndUpdateObservableHand(currentPlayer);
+        flipCardAndUpdateDisplay(currentPlayer, newCard);
         if(hasEndTurnCondition(currentPlayer)) {
             passTurn();
         }
@@ -287,10 +306,30 @@ public class BlackjackEngine {
     }
 
     private void passTurn() {
-        setNextPlayer();
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            numOfTurns++;
+            blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
+            if (getCurrentPlayerIndex() == players.length) {
+                takeHouseTurn();
+                calculatePayouts();
+            }
+        }
+    }
+
+    private void calculatePayouts() {
+    }
+
+    private void takeHouseTurn() {
+        house.getHand().forEach(card -> {if(!card.isFlipped()) {flipCardAndUpdateDisplay(house, card);}});
+        while (calculateHandTotal(house) < 17) {
+            handleHit();
+        }
+        handleStay();
     }
 
     private void setNextPlayer() {
+        numOfTurns++;
     }
 
     private void handlePossibleEndCondition() {
@@ -310,10 +349,12 @@ public class BlackjackEngine {
     }
 
     public void handleStay() {
+        passTurn();
     }
 
     int getCurrentPlayerIndex() {
-        return numOfTurns % players.length;
+        System.out.println("Player turn: " + (numOfTurns % (players.length + 1)));
+        return numOfTurns % (players.length + 1);
     }
 
     public static Deck getDeck() {
@@ -322,5 +363,13 @@ public class BlackjackEngine {
 
     public static void setDeck(Deck deck) {
         BlackjackEngine.deck = deck;
+    }
+
+    public Player getHouse() {
+        return house;
+    }
+
+    public void setHouse(Player house) {
+        this.house = house;
     }
 }

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import models.Player;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -36,6 +37,9 @@ public class BlackjackHomeScene {
                 Player3NameInput.getText(), Player4NameInput.getText(), Player5NameInput.getText()};
         double initialBankAmount = 20.00;
         getEngine().createPlayers(numOfPlayers, playerNames, initialBankAmount);
+        if (getEngine().getHouse() == null) {
+            getEngine().setHouse(new Player("House", Double.MAX_VALUE, true));
+        }
 //        for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
 //            getEngine().getPlayers()[playerNum].setName(playerNames[playerNum]);
 //        }
