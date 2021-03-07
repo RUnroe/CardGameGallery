@@ -20,6 +20,13 @@ public class Player implements Serializable {
         this.hand = new ArrayList<>();
     }
 
+    public Player(String name, double initialBankAmount, boolean isPlayerAI) {
+        this.name = name;
+        this.bank = initialBankAmount;
+        this.hand = FXCollections.observableArrayList();
+        this.isPlayerAI = isPlayerAI;
+    }
+
     public Player(String name, double initialBankAmount) {
         this.name = name;
         this.bank = initialBankAmount;
@@ -87,7 +94,7 @@ public class Player implements Serializable {
         }
     }
 
-    public void drawFromDeck(Deck deck) {
+    public Card drawFromDeck(Deck deck) {
         int topOfDeckIndex = deck.getCards().size() - 1;
         Card card = deck.getTopCard();
         if (hand == null) {
@@ -95,6 +102,7 @@ public class Player implements Serializable {
         }
         hand.add(card);
         deck.removeTopCard();
+        return card;
     }
     public boolean isPlayerAI() {
         return isPlayerAI;
@@ -102,5 +110,10 @@ public class Player implements Serializable {
 
     public void setPlayerAI(boolean playerAI) {
         isPlayerAI = playerAI;
+    }
+
+    public int getHandTotal() {
+        System.out.println("Hand total: " + getHand().stream().mapToInt(Card::getRankValue).sum());
+        return getHand().stream().mapToInt(Card::getRankValue).sum();
     }
 }

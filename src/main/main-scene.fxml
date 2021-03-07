@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="TOP_CENTER" spacing="6.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainScene">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="268.0" prefWidth="322.0" spacing="6.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainScene">
 <Label lineSpacing="1.0" text="Thank you for visiting the Forest's Fallacy!&#10;Here you can gamble to your hearts content,&#10;or your pockets' bottoms!&#10;&#10;Click a button below to play the game." wrapText="true">
       <font>
          <Font name="Comic Sans MS" size="14.0" />
       </font></Label>
 <Button fx:id="btnPlayPoker" mnemonicParsing="false" onAction="#onActionBtnPlayPoker" text="Poker" />
-<Button fx:id="btnPlayBlackjack" disable="true" mnemonicParsing="false" onAction="#onActionBtnPlayBlackjack" text="Blackjack" />
+<Button fx:id="btnPlayBlackjack" mnemonicParsing="false" onAction="#onActionBtnPlayBlackjack" text="Blackjack" />
 <Button fx:id="btnPlayGoFish" disable="true" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#onActionBtnPlayGoFish" text="Go Fish" />
 <Button fx:id="btnPlayWar" layoutX="10.0" layoutY="61.0" mnemonicParsing="false" onAction="#onActionBtnPlayWar" text="War" />
    <padding>
