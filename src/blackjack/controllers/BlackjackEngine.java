@@ -1,8 +1,10 @@
 package blackjack.controllers;
 
 //region Imports
+import blackjack.models.BlackjackData;
 import blackjack.presenters.BlackjackGameScene;
 import blackjack.presenters.BlackjackHomeScene;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +13,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import models.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -505,5 +510,51 @@ public class BlackjackEngine {
 
     public void setPriceOfHand(double priceOfHand) {
         this.priceOfHand = priceOfHand;
+    }
+
+    public void saveGame(File file) {
+        try {
+            boolean isFileCreationSuccessful = file.createNewFile();
+            if (isFileCreationSuccessful) {
+                if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+                    BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+                    BlackjackData blackjackData = new BlackjackData(getPlayers(), getHouse(), getDeck(), getPriceOfHand(), numOfTurns, !blackjackGameScene.vBoxStartRound.isDisabled());
+                    FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                    objectOutputStream.writeObject(blackjackData);
+                    objectOutputStream.close();
+                    fileOutputStream.close();
+                    System.out.println(file);
+                }
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void load(BlackjackData blackjackData) {
+        setPlayers(blackjackData.getPlayers());
+        setHouse(blackjackData.getHouse());
+        setDeck(blackjackData.getDeck());
+        setPriceOfHand(blackjackData.getPriceOfHand());
+        numOfTurns = blackjackData.getNumberOfTurns();
+        if (blackjackData.isBetweenRounds()) {
+            showStartRoundVBox();
+        } else {
+            if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+                BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+                blackjackGameScene.setPlayerHands(FXCollections.observableArrayList());
+                Arrays.stream(blackjackGameScene.getPlayerHandHBoxs()).forEach(hBox -> hBox.getChildren().clear());
+                for (int playerNum = 0; playerNum < getPlayers().length; playerNum++) {
+                    blackjackGameScene.getPlayerHands().get(playerNum).addAll(getPlayers()[playerNum].getHand());
+                }
+                blackjackGameScene.vBoxStartRound.setVisible(false);
+                blackjackGameScene.vBoxStartRound.setDisable(true);
+                blackjackGameScene.btnBarHitOrStay.setVisible(true);
+                blackjackGameScene.btnBarHitOrStay.setDisable(false);
+                blackjackGameScene.updateBanks();
+                blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
+            }
+        }
     }
 }

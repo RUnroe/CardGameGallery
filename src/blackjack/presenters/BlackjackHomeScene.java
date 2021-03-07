@@ -10,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.Player;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -23,6 +25,8 @@ public class BlackjackHomeScene {
 
     Stage stage;
     BlackjackEngine engine;
+
+    private int numberOfPlayers;
 
     public void createGame(ActionEvent actionEvent) {
         //Create and instantiate player array list
@@ -99,5 +103,63 @@ public class BlackjackHomeScene {
 //        }
 //        changeScene("../views/blackjack-game-scene.fxml");
         getEngine().setupGameGui(true);
+    }
+
+    //Runs on startup. Adds event listener to spinner
+    public void initialize() {
+        //Set event listener on spinner
+        try {
+            numberOfPlayersInput.getEditor().textProperty().addListener((obs, oldValue, newValue) ->
+                    changeNumberOfPlayersInput(Integer.parseInt(newValue)));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Callback when changing the spinner for number of players
+    public void changeNumberOfPlayersInput(int numberOfPlayers) {
+        this.numberOfPlayers = numberOfPlayers;
+        switch (numberOfPlayers) {
+            case 1 -> {
+                Player2NameInput.setDisable(true);
+                Player3NameInput.setDisable(true);
+                Player4NameInput.setDisable(true);
+                Player5NameInput.setDisable(true);
+            }
+            case 2 -> {
+                Player2NameInput.setDisable(false);
+                Player3NameInput.setDisable(true);
+                Player4NameInput.setDisable(true);
+                Player5NameInput.setDisable(true);
+            }
+            case 3 -> {
+                Player2NameInput.setDisable(false);
+                Player3NameInput.setDisable(false);
+                Player4NameInput.setDisable(true);
+                Player5NameInput.setDisable(true);
+            }
+            case 4 -> {
+                Player2NameInput.setDisable(false);
+                Player3NameInput.setDisable(false);
+                Player4NameInput.setDisable(false);
+                Player5NameInput.setDisable(true);
+            }
+            case 5 -> {
+                Player2NameInput.setDisable(false);
+                Player3NameInput.setDisable(false);
+                Player4NameInput.setDisable(false);
+                Player5NameInput.setDisable(false);
+            }
+        }
+//        adjustListForHouse();
+    }
+
+    private void openFile(File file) {
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
