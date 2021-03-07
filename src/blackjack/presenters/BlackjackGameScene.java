@@ -5,12 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import models.Card;
 import models.Player;
@@ -42,6 +43,18 @@ public class BlackjackGameScene {
     public ButtonBar btnBarHitOrStay;
     public Button btnHit;
     public Button btnStay;
+    public ToggleGroup tglGrpPriceOfHand;
+    public RadioButton rdBtnOneDollar;
+    public RadioButton rdBtnFiveDollars;
+    public RadioButton rdBtnTenDollars;
+    public Button btnStartRound;
+    public VBox vBoxStartRound;
+    public Label lblPlayerOneBank;
+    public Label lblPlayerTwoBank;
+    public Label lblPlayerThreeBank;
+    public Label lblPlayerFourBank;
+    public Label lblPlayerFiveBank;
+    public Label lblHouseBank;
 
     Stage stage;
     BlackjackEngine engine;
@@ -49,6 +62,7 @@ public class BlackjackGameScene {
     List<ObservableList<Card>> playerHands;
     ObservableList<Card> houseHand;
     List<Label> playerNames;
+    List<Label> playerBanks;
 
 
     public void exampleDisplayHand(Player player) {
@@ -81,6 +95,16 @@ public class BlackjackGameScene {
         for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
             playerLabels[playerNum].setText(getEngine().getPlayers()[playerNum].getName());
         }
+    }
+
+    public void updateBanks() {
+        if (playerBanks == null) {
+            playerBanks = new ArrayList<>(Arrays.asList(lblPlayerOneBank, lblPlayerTwoBank, lblPlayerThreeBank, lblPlayerFourBank, lblPlayerFiveBank));
+        }
+        for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
+            playerBanks.get(playerNum).setText("$" + getEngine().getPlayers()[playerNum].getBank());
+        }
+//        lblHouseBank.setText("$" + getEngine().getHouse().getBank());
     }
 
     public Stage getStage() {
@@ -161,15 +185,16 @@ public class BlackjackGameScene {
 //            }
 
     }
-
+    static int i = 0;
     private void updateHboxOnListChange(ListChangeListener.Change<? extends Card> change, HBox hBox) {
         while (change.next()) { // checks for change
+            System.out.println("Change: " + change);
             if (change.wasAdded()) { // checks for additions to the hand
                 change.getAddedSubList().forEach(card -> {
                     hBox.getChildren().add(card.getImageView()); // adds cards to display
                 });
             } else if (change.wasRemoved()) { // checks for removal from hand
-                change.getAddedSubList().forEach(card -> {
+                change.getRemoved().forEach(card -> {
                     hBox.getChildren().remove(card.getImageView()); // removes cards from display
                 });
             } else if (change.wasPermutated()) {
@@ -196,22 +221,31 @@ public class BlackjackGameScene {
         int previousPlayerIndex = currentPlayerIndex - 1 < 0 ? getEngine().getPlayers().length : currentPlayerIndex - 1;
 
         if (previousPlayerIndex == getEngine().getPlayers().length) {
-        lblHouseName.setStyle("-fx-border-color: transparent");
+//        lblHouseName.setStyle("-fx-border-color: transparent");
+            lblHouseName.setTextFill(Paint.valueOf("0x333333ff"));
+
         } else {
-        playerNames.get(previousPlayerIndex).setStyle("-fx-border-color: transparent");
+//        playerNames.get(previousPlayerIndex).setStyle("-fx-border-color: transparent");
+            playerNames.get(previousPlayerIndex).setTextFill(Paint.valueOf("0x333333ff"));
+
         }
         if (currentPlayerIndex == getEngine().getPlayers().length) {
-            lblHouseName.setStyle("-fx-border-color: orange");
+            Paint defColor = lblHouseName.getTextFill();
+//            System.out.println("Paint: " + defColor);
+//            lblHouseName.setStyle("-fx-stroke: orange");
+            lblHouseName.setTextFill(Color.DARKORANGE);
         } else {
-            playerNames.get(currentPlayerIndex).setStyle("-fx-border-color: orange");
+//            playerNames.get(currentPlayerIndex).setStyle("-fx-stroke: orange");
+            playerNames.get(currentPlayerIndex).setTextFill(Color.DARKORANGE);
+
         }
     }
 
     private void createPlayerNamesList() {
         playerNames = new ArrayList<>(Arrays.asList(
                 lblPlayerOneName, lblPlayerTwoName, lblPlayerThreeName, lblPlayerFourName, lblPlayerFiveName));
-        playerNames.forEach(name -> name.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5"));
-        lblHouseName.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5");
+//        playerNames.forEach(name -> name.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5"));
+//        lblHouseName.setStyle("-fx-border-color: transparent; -fx-border-width: 3; -fx-border-radius: 50%; -fx-padding: 5");
     }
 
     public ObservableList<Card> getHouseHand() {
@@ -221,4 +255,26 @@ public class BlackjackGameScene {
     public void setHouseHand(ObservableList<Card> houseHand) {
         this.houseHand = houseHand;
     }
+
+    public void onActionBtnStartRound(ActionEvent actionEvent) {
+        double priceOfHand = 0;
+        if (tglGrpPriceOfHand.getSelectedToggle().equals(rdBtnOneDollar)) {
+            priceOfHand = 1.00;
+        } else if (tglGrpPriceOfHand.getSelectedToggle().equals(rdBtnFiveDollars)) {
+            priceOfHand = 5.00;
+        } else if (tglGrpPriceOfHand.getSelectedToggle().equals(rdBtnTenDollars)) {
+            priceOfHand = 10.00;
+        };
+        getEngine().setupNewRound(priceOfHand);
+    }
+
+    public List<ObservableList<Card>> getPlayerHands() {
+        return playerHands;
+    }
+
+    public void setPlayerHands(List<ObservableList<Card>> playerHands) {
+        this.playerHands = playerHands;
+    }
+
+
 }

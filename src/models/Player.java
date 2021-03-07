@@ -111,6 +111,7 @@ public class Player {
     }
 
     public int getHandTotal() {
+        System.out.println("Hand total: " + getHand().stream().mapToInt(Card::getRankValue).sum());
         return getHand().stream().mapToInt(Card::getRankValue).sum();
     }
 }

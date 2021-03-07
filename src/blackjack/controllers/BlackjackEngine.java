@@ -3,7 +3,6 @@ package blackjack.controllers;
 //region Imports
 import blackjack.presenters.BlackjackGameScene;
 import blackjack.presenters.BlackjackHomeScene;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +14,7 @@ import models.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,8 @@ public class BlackjackEngine {
     Stage stage;
     static Deck deck;
 
+    double priceOfHand;
+
     //region Setup Methods
     public void setupHomeGui() {
         changeScene(HOME_PATH);
@@ -38,13 +40,13 @@ public class BlackjackEngine {
             BlackjackHomeScene blackjackHomeScene = fxmlLoader.getController();
             blackjackHomeScene.setStage(getStage());
             blackjackHomeScene.setEngine(this);
-            getStage().setX(getStage().getX() - 500);
-            getStage().setY(getStage().getY() - 150);
+            getStage().setX(0);
+            getStage().setY(0);
         }
     }
-    public void setupGameGui() {
-        getStage().setX(getStage().getX() - 75);
-        getStage().setY(getStage().getY() - 20);
+    public void setupGameGui(boolean isNewGame) {
+        getStage().setX(0);
+        getStage().setY(0);
         changeScene(GAME_PATH);
         if (fxmlLoader.getController() instanceof BlackjackGameScene) {
             BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
@@ -52,16 +54,24 @@ public class BlackjackEngine {
             blackjackGameScene.setEngine(this);
             blackjackGameScene.setPlayerNames();
             blackjackGameScene.setupObservableHandsWithListeners();
-            setupEngine();
-            blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
+//            blackjackGameScene.rdBtnOneDollar.setToggleGroup(blackjackGameScene.tglGrpPriceOfHand);
+//            blackjackGameScene.rdBtnFiveDollars.setToggleGroup(blackjackGameScene.tglGrpPriceOfHand);
+//            blackjackGameScene.rdBtnTenDollars.setToggleGroup(blackjackGameScene.tglGrpPriceOfHand);
+            showStartRoundVBox();
+//            setupEngine();
+//            blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
         }
     }
 
     public void setupEngine() {
 //        addListenersToEachPlayerHand();
 //        addListenerToHouseHand();
-        setDeck(new Deck(1));
+        numOfTurns = -1;
+        if (getDeck() == null || getDeck().getCards().size() < 60) {
+            setDeck(new Deck(6));
+        }
         setupStartingHands();
+        passTurn();
 //        for (int i = 0; i < numOfPlayers; i++) {
 //            if (players[i] == null) {
 //                players[i] = new Player("Player " + i, 20.00);
@@ -72,10 +82,6 @@ public class BlackjackEngine {
 
     public void setup(Stage stage) {
 //        setupEngine();
-        numOfPlayers = 5;
-        if (getPlayers() == null) {
-            setPlayers(new Player[numOfPlayers]);
-        }
         setStage(stage);
         setupHomeGui();
 //        setupGameGui();
@@ -143,6 +149,19 @@ public class BlackjackEngine {
 //    }
 
     private void setupStartingHands() {
+        Arrays.stream(players).forEach(player -> {
+            if (player.getHand() == null) {
+                player.setHand(new ArrayList<>());
+            }
+            clearAndUpdateObservableHands(player);
+            if (player.getBank() > -50.00) {
+            buyInToRound(player);
+            }
+        });
+        if (getHouse().getHand() == null) {
+            house.setHand(new ArrayList<>());
+        }
+        clearAndUpdateObservableHands(house);
         for (int numOfInitialCards = 0; numOfInitialCards < 2; numOfInitialCards++) {
             drawOnceForAllHands();
         }
@@ -150,8 +169,16 @@ public class BlackjackEngine {
         flipAllCardsExceptHoleCard();
     }
 
+    private void buyInToRound(Player player) {
+        player.setBank(player.getBank() - getPriceOfHand());
+    }
+
     private void drawOnceForAllHands() {
-        Arrays.stream(players).forEach(this::drawAndUpdateObservableHand);
+        Arrays.stream(players).forEach(player -> {
+            if (player.getBank() > -50) {
+            drawAndUpdateObservableHand(player);
+            }
+        });
         drawAndUpdateObservableHand(house);
     }
 
@@ -162,13 +189,42 @@ public class BlackjackEngine {
             if (!player.equals(getHouse())) {
                 // gets the hbox from a list at the same index as the player in the players list,
                 // and adds the new card's image view as a child
-                blackjackGameScene.getPlayerHandHBoxs()[Arrays.stream(players).collect(Collectors.toList())
-                        .indexOf(player)].getChildren().add(card.getImageView());
+//                blackjackGameScene.getPlayerHandHBoxs()[Arrays.stream(players).collect(Collectors.toList())
+//                        .indexOf(player)].getChildren().add(card.getImageView());
+                blackjackGameScene.getPlayerHands().get(Arrays.stream(players).collect(Collectors.toList())
+                        .indexOf(player)).add(card);
             } else {
-                blackjackGameScene.getHBoxHouseHand().getChildren().add(card.getImageView());
+//                blackjackGameScene.getHBoxHouseHand().getChildren().add(card.getImageView());
+                blackjackGameScene.getHouseHand().add(card);
             }
         }
         return card;
+    }
+
+    private void clearAndUpdateObservableHands(Player player) {
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            player.getHand().clear();
+            if (!player.equals(getHouse())) {
+                // gets the hbox from a list at the same index as the player in the players list,
+                // and clears the hbox of children
+                blackjackGameScene.getPlayerHandHBoxs()[Arrays.stream(players).collect(Collectors.toList())
+                        .indexOf(player)].getChildren().clear();
+//                for (int playerNum = 0; playerNum < players.length; playerNum++) {
+//                    for (Card card : new ArrayList<>(blackjackGameScene.getPlayerHands().get(playerNum))) {
+//                        blackjackGameScene.getPlayerHands().get(playerNum).remove(card);
+//                    }
+//                }
+                blackjackGameScene.getPlayerHands().get(Arrays.stream(players).collect(Collectors.toList())
+                        .indexOf(player)).clear();
+            } else {
+                blackjackGameScene.getHBoxHouseHand().getChildren().clear();
+//                for (Card card : new ArrayList<>(blackjackGameScene.getHouseHand())) {
+//                    blackjackGameScene.getHouseHand().remove(card);
+//                }
+                blackjackGameScene.getHouseHand().clear();
+            }
+        }
     }
 
     private void flipCardAndUpdateDisplay(Player player, int cardIndex) {
@@ -283,7 +339,8 @@ public class BlackjackEngine {
     }
 
     private boolean hasEndTurnCondition(Player currentPlayer) {
-        return false;
+        System.out.println("Total core for " + currentPlayer.getName() + ": " + calculateHandTotal(currentPlayer));
+        return calculateHandTotal(currentPlayer) >= 21 || currentPlayer.getBank() <= -50.00 || currentPlayer.getHand().size() > 4;
     }
 
 
@@ -294,13 +351,20 @@ public class BlackjackEngine {
     }
 
     private int calculateHandTotal(Player player) {
-        int totalValue = player.getHandTotal();
-        if (totalValue < 11) {
-            int numOfAces = (int) player.getHand().stream().filter(card -> card.getRank().equals(ERank.ACE)).count();
-            while (totalValue < 11 && numOfAces > 0) {
-                totalValue += 10;
-                numOfAces--;
-            }
+        //TODO fix face card values to be 10 points for blackjack
+        int totalValue = 0;//player.getHandTotal();
+        for (Card card : player.getHand()) {
+            int cardValue = switch (card.getRank()) {
+                case JACK, QUEEN, KING -> 10;
+                default -> card.getRankValue();
+            };
+            totalValue += cardValue;
+        }
+        int numOfAces = (int) player.getHand().stream().filter(card -> card.getRank().equals(ERank.ACE)).count();
+        System.out.println("Aces# " + numOfAces);
+        while (totalValue < 12 && numOfAces > 0) {
+            totalValue += 10;
+            numOfAces--;
         }
         return totalValue;
     }
@@ -310,22 +374,84 @@ public class BlackjackEngine {
             BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
             numOfTurns++;
             blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
-            if (getCurrentPlayerIndex() == players.length) {
-                takeHouseTurn();
-                calculatePayouts();
+            if (getCurrentPlayerIndex() >= players.length) {
+                if (!hasEndTurnCondition(house)) {
+                    takeHouseTurn();
+                }
+                handleEndOfRound();
+            } else if (hasEndTurnCondition(players[getCurrentPlayerIndex()])) {
+                passTurn();
             }
         }
     }
 
+    private void handleEndOfRound() {
+        calculatePayouts();
+        showStartRoundVBox();
+    }
+
+    private void showStartRoundVBox() {
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            blackjackGameScene.updateBanks();
+            blackjackGameScene.btnBarHitOrStay.setVisible(false);
+            blackjackGameScene.btnBarHitOrStay.setDisable(true);
+            blackjackGameScene.vBoxStartRound.setVisible(true);
+            blackjackGameScene.vBoxStartRound.setDisable(false);
+        }
+    }
+
+    public void setupNewRound(double priceOfHand) {
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            blackjackGameScene.vBoxStartRound.setVisible(false);
+            blackjackGameScene.vBoxStartRound.setDisable(true);
+            blackjackGameScene.btnBarHitOrStay.setVisible(true);
+            blackjackGameScene.btnBarHitOrStay.setDisable(false);
+//            blackjackGameScene.radio
+            setPriceOfHand(priceOfHand);
+            setupEngine();
+            blackjackGameScene.updateBanks();
+            blackjackGameScene.highlightCurrentPlayerName(getCurrentPlayerIndex());
+        }
+
+    }
+
     private void calculatePayouts() {
+        int houseTotal = calculateHandTotal(house);
+        Arrays.stream(players).forEach(player -> {
+            if (player.getBank() > -50) {
+                int playerTotal = calculateHandTotal(player);
+                if (player.getHand().size() > 4) { // 5-card charlie 4x // this win is independent of hand totals
+                    payPlayer(player, 4);
+                } else if (playerTotal == houseTotal) { // draw 1x // no matter hand total player == house is draw
+                    payPlayer(player, 1);
+                } else if (playerTotal == 21) { // blackjack 3x // getting here requires player hand total != house so not a draw
+                    payPlayer(player, 3);
+                } else if (playerTotal < 21 && playerTotal > houseTotal) { // win 2x // player hand total must be higher than house without busting
+                    payPlayer(player, 2);
+                }
+            }
+        });
+    }
+
+    private void payPlayer(Player player, int payoutScalar) {
+        player.setBank(player.getBank() + (payoutScalar * getPriceOfHand()));
     }
 
     private void takeHouseTurn() {
-        house.getHand().forEach(card -> {if(!card.isFlipped()) {flipCardAndUpdateDisplay(house, card);}});
-        while (calculateHandTotal(house) < 17) {
-            handleHit();
+        if (fxmlLoader.getController() instanceof BlackjackGameScene) {
+            BlackjackGameScene blackjackGameScene = fxmlLoader.getController();
+            blackjackGameScene.btnHit.setDisable(true);
+            blackjackGameScene.btnStay.setDisable(true);
+            house.getHand().forEach(card -> {if(!card.isFlipped()) {flipCardAndUpdateDisplay(house, card);}});
+            while (calculateHandTotal(house) < 17) {
+                handleHit();
+            }
+            blackjackGameScene.btnHit.setDisable(false);
+            blackjackGameScene.btnStay.setDisable(false);
+//            handleStay();
         }
-        handleStay();
     }
 
     private void setNextPlayer() {
@@ -371,5 +497,13 @@ public class BlackjackEngine {
 
     public void setHouse(Player house) {
         this.house = house;
+    }
+
+    public double getPriceOfHand() {
+        return priceOfHand;
+    }
+
+    public void setPriceOfHand(double priceOfHand) {
+        this.priceOfHand = priceOfHand;
     }
 }

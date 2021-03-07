@@ -44,7 +44,7 @@ public class BlackjackHomeScene {
 //            getEngine().getPlayers()[playerNum].setName(playerNames[playerNum]);
 //        }
 //        changeScene("../views/blackjack-game-scene.fxml");
-        getEngine().setupGameGui();
+        getEngine().setupGameGui(true);
     }
 
     public void changeScene(String fxmlPath) {
@@ -80,6 +80,24 @@ public class BlackjackHomeScene {
     }
 
     public void loadGame(ActionEvent actionEvent) {
-        throw new UnsupportedOperationException("This feature is not yet implemented.");
+//        throw new UnsupportedOperationException("This feature is not yet implemented.");
+        String file = null;
+        if (file != null) {
+
+            int numOfPlayers = numberOfPlayersInput.getValue();
+            System.out.println(numOfPlayers);
+            String[] playerNames = new String[] {Player1NameInput.getText(), Player2NameInput.getText(),
+                    Player3NameInput.getText(), Player4NameInput.getText(), Player5NameInput.getText()};
+            double initialBankAmount = 20.00;
+            getEngine().createPlayers(numOfPlayers, playerNames, initialBankAmount);
+            if (getEngine().getHouse() == null) {
+                getEngine().setHouse(new Player("House", Double.MAX_VALUE, true));
+            }
+        }
+//        for (int playerNum = 0; playerNum < getEngine().getPlayers().length; playerNum++) {
+//            getEngine().getPlayers()[playerNum].setName(playerNames[playerNum]);
+//        }
+//        changeScene("../views/blackjack-game-scene.fxml");
+        getEngine().setupGameGui(true);
     }
 }
