@@ -7,13 +7,13 @@ import models.Player;
 
 import java.util.ArrayList;
 
-public class GoFishController {
+public class GoFish {
     private static Player[] players;
     private static int[] scores;
     private static Deck deck;
     private static int turn;
 
-    public static void setupGame(Player... p){
+    public GoFish(Player... p){
         turn = 0;
         players = p;
         scores = new int[players.length];
@@ -69,5 +69,42 @@ public class GoFishController {
         }
         players[player].addToScore(1);
         return book;
+    }
+
+    public static Player[] getPlayers() {
+        return players;
+    }
+
+    public static void setPlayers(Player[] players) {
+        GoFish.players = players;
+    }
+
+    public static int[] getScores() {
+        return scores;
+    }
+
+    public static void setScores(int[] scores) {
+        GoFish.scores = scores;
+    }
+    public static void addToScore(int pos, int score){
+        scores[pos] += score;
+    }
+    public static Deck getDeck() {
+        return deck;
+    }
+
+    public static void setDeck(Deck deck) {
+        GoFish.deck = deck;
+    }
+
+    public static int getTurn() {
+        return turn;
+    }
+
+    public static void setTurn(int turn) {
+        GoFish.turn = turn;
+    }
+    public static void nextTurn(){
+        turn++;
     }
 }
