@@ -1,21 +1,32 @@
 package blackjack.presenters;
 
 import blackjack.controllers.BlackjackEngine;
+import blackjack.models.BlackjackData;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.Card;
 import models.Player;
+import poker.controllers.PokerEngine;
+import poker.models.PokerModel;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +66,8 @@ public class BlackjackGameScene {
     public Label lblPlayerFourBank;
     public Label lblPlayerFiveBank;
     public Label lblHouseBank;
+    public Button btnSave;
+    public Button btnLoad;
 
     Stage stage;
     BlackjackEngine engine;
@@ -277,4 +290,59 @@ public class BlackjackGameScene {
     }
 
 
+    public void onActionBtnSave(ActionEvent actionEvent) {
+        //Set extension filter for text files
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Blackjack files (*.bjk)", "*.bjk");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(btnSave.getScene().getWindow());
+
+        if (file != null) {
+            getEngine().saveGame(file);
+        }
+    }
+
+    public void onActionBtnLoad(ActionEvent actionEvent) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(findFile());
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            BlackjackData blackjackData = (BlackjackData) objectInputStream.readObject();
+            fileInputStream.close();
+            objectInputStream.close();
+//            engine = new PokerEngine(e);
+            getEngine().load(blackjackData);
+            //change scene to game scene
+//            changeScene((Stage) btnLoad.getScene().getWindow(), "../views/poker-game-scene.fxml");
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    private File findFile() {
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Blackjack files (*.bjk)", "*.bjk");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File loadedFile = fileChooser.showOpenDialog(btnLoad.getScene().getWindow());
+        if (loadedFile != null) {
+            openFile(loadedFile);
+        }
+        return loadedFile;
+//        try {
+//            LoadedFileName.setText(loadedFile.getName());
+//        }catch(Exception e) {
+//            LoadedFileName.setText("No file chosen");
+//        }
+    }
+
+    private void openFile(File file) {
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

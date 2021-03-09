@@ -4,13 +4,13 @@ import models.Card;
 import models.Deck;
 import models.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PokerModel {
+public class PokerModel implements Serializable {
 
 
     private ArrayList<Player> playerList = new ArrayList<>();
-    private ArrayList<Player> playersWhoHaveNotFolded = new ArrayList<>();
     private Deck deck = new Deck(1);
     private int moneyPool = 0;
     private int currentPlayerIndex = 0;
@@ -20,6 +20,8 @@ public class PokerModel {
     private boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
     private int raiseAmount = 0;
     private boolean inBetPhase = true;
+
+    private boolean[] playerHasFolded = new boolean[] {false, false, false, false};
 
     //Getters and Setters
     public ArrayList<Player> getPlayerList() {
@@ -38,18 +40,6 @@ public class PokerModel {
 
     public void addPlayerToPlayerList(Player player) {
         this.playerList.add(player);
-    }
-
-    public ArrayList<Player> getPlayersWhoHaveNotFolded() {
-        return this.playersWhoHaveNotFolded;
-    }
-
-    public void resetPlayersWhoHaveNotFolded() {
-        this.playersWhoHaveNotFolded = (ArrayList<Player>) this.playerList.clone();
-    }
-
-    public void foldPlayerByIndex(int indexOfPlayer) {
-        this.playersWhoHaveNotFolded.remove(indexOfPlayer);
     }
 
     public Deck getDeck() {
@@ -89,12 +79,11 @@ public class PokerModel {
 
     //By default, switch by 1. We do not want to increment the playerIndex when a player folds(is removed from arraylist)
     public void switchTurn() {
-        switchTurn(1);
-    }
-    public void switchTurn(int incrementValue) {
-        this.currentPlayerIndex += incrementValue;
+        this.currentPlayerIndex += 1;
         //If next player index is out of bounds, wrap back to player 0
-        this.currentPlayerIndex %= getNumberOfActivePlayers();
+        this.currentPlayerIndex %= playerList.size();
+        //If the new player has folded, go to the next player
+        if(playerHasFolded[currentPlayerIndex]) switchTurn();
     }
 
     public int getCurrentBet() {
@@ -110,7 +99,7 @@ public class PokerModel {
     }
 
     public int getNumberOfActivePlayers() {
-        return this.playersWhoHaveNotFolded.size();
+        return getPlayersWhoHaveNotFolded().size();
     }
 
 
@@ -162,4 +151,28 @@ public class PokerModel {
     public void setInBetPhase(boolean inBetPhase) {
         this.inBetPhase = inBetPhase;
     }
+
+
+
+    public boolean[] getPlayerHasFolded() {
+        return playerHasFolded;
+    }
+    public void foldPlayerByIndex(int indexOfPlayer) {
+        this.playerHasFolded[indexOfPlayer] = true;
+    }
+
+    public void resetPlayerHasFolded() {
+        for (int i = 0; i < playerHasFolded.length; i++) {
+            playerHasFolded[i] = false;
+        }
+    }
+
+    public ArrayList<Player> getPlayersWhoHaveNotFolded() {
+        ArrayList<Player> players = new ArrayList<>();
+        for(int i = 0; i < playerList.size(); i++) {
+            if(!playerHasFolded[i]) players.add(playerList.get(i));
+        }
+        return players;
+    }
+
 }

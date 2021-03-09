@@ -7,17 +7,26 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.Card;
 import models.Player;
 import poker.controllers.PokerEngine;
 import poker.models.GameStage;
+import poker.models.PokerModel;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -60,6 +69,11 @@ public class PokerScene {
     private int numberOfPlayers = 2;
     private static PokerEngine engine;
 
+    FileChooser fileChooser = new FileChooser();
+    Desktop desktop = Desktop.getDesktop();
+    File loadedFile;
+
+
     //Runs on startup. Adds event listener to spinner
     public void initialize() {
         //Set event listener on spinner
@@ -93,15 +107,62 @@ public class PokerScene {
     }
     //Go to game page with game information
     public void loadGame(ActionEvent actionEvent) {
+        try {
+            FileInputStream f = new FileInputStream(loadedFile);
+            ObjectInputStream o = new ObjectInputStream(f);
+            PokerModel e = (PokerModel) o.readObject();
+            f.close();
+            o.close();
+            engine = new PokerEngine(e);
+            //change scene to game scene
+            changeScene((Stage) CreateGameBtn.getScene().getWindow(), "../views/poker-game-scene.fxml");
+        } catch (Exception e){
+            System.out.println(e);
+        }
 
     }
-
 
 
     //Open choose file and let the user select a file
     public void findFile(ActionEvent actionEvent) {
+        //Set extension filter for text files
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PKR files (*.pkr)", "*.pkr");
+        fileChooser.getExtensionFilters().add(extFilter);
 
+        loadedFile = fileChooser.showOpenDialog(CreateGameBtn.getScene().getWindow());
+        if (loadedFile != null) {
+            openFile(loadedFile);
+        }
+        try {
+            LoadedFileName.setText(loadedFile.getName());
+        }catch(Exception e) {
+            LoadedFileName.setText("No file chosen");
+        }
     }
+
+
+    public void saveGame(ActionEvent actionEvent) {
+        //Set extension filter for text files
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PKR files (*.pkr)", "*.pkr");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(QuitGameBtn.getScene().getWindow());
+
+        if (file != null) {
+            engine.saveBoard(file);
+        }
+    }
+
+
+    private void openFile(File file) {
+        try {
+            desktop.open(file);
+        } catch (IOException ex) {
+        }
+    }
+
+
 
 
     private ArrayList<Player> getPlayerList() {
@@ -183,6 +244,7 @@ public class PokerScene {
                 displayPlayer(engine.getModel().getNextPlayer(3), 3);
                 break;
         }
+
     }
 
     private void displayPlayer(Player player, int positionIndex) {
@@ -192,16 +254,30 @@ public class PokerScene {
         nameDisplayArray[positionIndex].setVisible(true);
         balanceDisplayArray[positionIndex].setVisible(true);
 
+
         nameDisplayArray[positionIndex].setText(player.getName());
         balanceDisplayArray[positionIndex].setText("$" + player.getBank());
     }
 
-
+    private void clearPlayerDisplays() {
+        Label[] nameDisplayArray = new Label[]{CurrPlayerNameDisplay, LeftPlayerNameDisplay, MidPlayerNameDisplay, RightPlayerNameDisplay};
+        Label[] balanceDisplayArray = new Label[]{CurrPlayerBalanceDisplay, LeftPlayerBalanceDisplay, MidPlayerBalanceDisplay, RightPlayerBalanceDisplay};
+        for(int i = 0; i < nameDisplayArray.length; i++) {
+            nameDisplayArray[i].setText("");
+            balanceDisplayArray[i].setText("");
+        }
+    }
     public void setBetRaiseValue(ActionEvent actionEvent) {
         //Make sure the buttons only do something when in the bet stage
         if(engine.getModel().getGameStage() == GameStage.BET) {
             //Get value out of button
             int selectedAmount = Integer.parseInt(((Button) actionEvent.getSource()).getId().split("Dollar")[1]);
+            if(engine.getModel().getCurrentBet() == 0) {
+                setText(engine.getModel().getCurrentPlayer().getName() + " bet $" + selectedAmount);
+            } else {
+                setText(engine.getModel().getCurrentPlayer().getName() + " raised by $" + selectedAmount);
+            }
+
             engine.placeBet(selectedAmount);
             endOfTurn();
         }
@@ -223,16 +299,34 @@ public class PokerScene {
         //disable all control buttons
         showControlBtns(new boolean[]{false, false, false, false, false});
 
+        clearPlayerDisplays();
+
         //show Ante up btn
         StartTurnBtn.setText("Ante Up");
         StartTurnBtn.setVisible(true);
+
+        //Detect if game has enough players to keep going
+        if(engine.getModel().getPlayerList().size() < 2) {
+            StartTurnBtn.setDisable(true);
+            setText("Game is over!");
+        }
     }
 
     public void playTurn(ActionEvent actionEvent) {
         if(StartTurnBtn.getText().equals("Ante Up")) {
-            anteUp();
-            engine.distributeCards();
-            engine.getModel().setGameStage(GameStage.DISCARD);
+            if(engine.getModel().getGameStage() == GameStage.ANTE) {
+                anteUp();
+                engine.distributeCards();
+                engine.getModel().setGameStage(GameStage.DISCARD);
+            }
+            else {
+                endOfTurn();
+                //update display
+                updatePlayerDisplays();
+                updateBankDisplay();
+                //change button
+                StartTurnBtn.setText("Start Turn");
+            }
         }
         else if(StartTurnBtn.getText().equals("Start Turn")) {
             startOfTurn();
@@ -240,6 +334,7 @@ public class PokerScene {
         else {
             //End of game. Reset game on next btn click
             resetGame();
+            updatePlayerDisplays();
         }
     }
     private void anteUp() {
@@ -277,6 +372,7 @@ public class PokerScene {
         //disable all control buttons
         showControlBtns(new boolean[]{false, false, false, false, false});
 
+
         //show next turn btn
         StartTurnBtn.setVisible(true);
 
@@ -291,7 +387,27 @@ public class PokerScene {
         }
 
         updatePlayerDisplays();
+        makeAiMove();
+    }
 
+    private void makeAiMove() {
+        //if ai is next, make turn
+        if(engine.getModel().getCurrentPlayer().isPlayerAI()) {
+            //Make move if in betting phase
+            if(engine.getModel().getGameStage() == GameStage.BET) {
+                if(engine.makeAiTurn()) {
+                    setText("House called");
+                }
+                else {
+                    setText("House folded");
+                }
+            }
+            //skip turn if not in betting phase (draw/discard phase)
+            else {
+                engine.discardCards();
+            }
+            endOfTurn();
+        }
     }
 
 
@@ -422,20 +538,20 @@ public class PokerScene {
     }
 
     public void allInTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " went all in!");
         engine.goAllIn();
         endOfTurn();
     }
 
     public void foldTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " folded");
         engine.fold();
         endOfTurn();
 
     }
 
     public void callTurn(ActionEvent actionEvent) {
-
+        setText(engine.getModel().getCurrentPlayer().getName() + " called");
         engine.call();
         endOfTurn();
 

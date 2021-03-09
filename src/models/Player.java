@@ -3,10 +3,11 @@ package models;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements Serializable {
     private String name;
     private int score;
     private boolean isPlayerAI = false;
@@ -16,6 +17,7 @@ public class Player {
     public Player(String name, int score) {
         this.name = name;
         this.score = score;
+        this.hand = new ArrayList<>();
     }
 
     public Player(String name, double initialBankAmount, boolean isPlayerAI) {
@@ -28,12 +30,12 @@ public class Player {
     public Player(String name, double initialBankAmount) {
         this.name = name;
         this.bank = initialBankAmount;
-        this.hand = FXCollections.observableArrayList();
+        this.hand = new ArrayList<>();
     }
 
     public Player(String name) {
         this.name = name;
-        this.hand = FXCollections.observableArrayList();
+        this.hand = new ArrayList<>();
     }
 
     public String getName() {

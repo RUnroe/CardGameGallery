@@ -6,6 +6,9 @@ import models.*;
 import poker.models.GameStage;
 import poker.models.PokerModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
 public class PokerEngine {
     private int bankInitValue = 100;
 
-    private PokerModel model = new PokerModel();
+    private PokerModel model;
 
 
     public PokerEngine(ArrayList<Player> players) {
@@ -21,23 +24,33 @@ public class PokerEngine {
         for (Player player: players) {
             player.setBank(bankInitValue);
         }
-
+        model = new PokerModel();
 
         //set initial data in the model
         model.setPlayerList(players);
-        model.resetPlayersWhoHaveNotFolded();
     }
 
     public PokerEngine(PokerModel model) {
         this.model = model;
     }
 
-
+    public void saveBoard(File file) {
+        try {
+            file.createNewFile();
+            FileOutputStream f = new FileOutputStream(file, false);
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            o.writeObject(model);
+            o.close();
+            f.close();
+            System.out.println(file);
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
     public void resetGame() {
-        model.resetPlayersWhoHaveNotFolded();
+        model.resetPlayerHasFolded();
         model.resetDeck();
-        //Dont know if this will work properly yet
         model.clearPlayersHands();
         model.setMoneyPool(0);
         model.setRaiseAmount(0);
@@ -46,8 +59,20 @@ public class PokerEngine {
         model.setLastPlayerToRaise(-1);
         model.setGameStage(GameStage.ANTE);
         model.setInBetPhase(true);
+
+        removePlayersInDebt();
     }
 
+    private void removePlayersInDebt() {
+        int limit = -500;
+        for (int i = 0; i < model.getPlayerList().size(); i++) {
+            if(model.getPlayerList().get(i).getBank() <= limit) {
+                model.getPlayerList().remove(i);
+                //Since player is getting removed from the list that we are evaluating, stay at same index
+                i--;
+            }
+        }
+    }
 
     public void anteUp() {
         for (Player player: model.getPlayerList()) {
@@ -80,7 +105,7 @@ public class PokerEngine {
     public void putMoneyInPool(int amount) {
         //Remove money from player and put in money pool
         //Players can only bet up to $1000 past their current bank
-        if(amount < (model.getCurrentPlayer().getBank() + 1000)) {
+        if(amount <= (model.getCurrentPlayer().getBank() + 1000)+1) {
             //Remove money from player
             model.getCurrentPlayer().setBank(model.getCurrentPlayer().getBank() - amount);
             //Add money to pool
@@ -119,7 +144,7 @@ public class PokerEngine {
 
     public void fold() {
         model.foldPlayerByIndex(getModel().getCurrentPlayerIndex());
-        model.switchTurn(0);
+        model.switchTurn();
 //        checkIfBetPhaseIsOver();
     }
     public void call() {
@@ -134,9 +159,11 @@ public class PokerEngine {
 //        checkIfBetPhaseIsOver();
     }
     public void goAllIn() {
-
+        //1000 is how much extra a player can bet past their balance
+        int maxAmount = 1000 + ((int) model.getCurrentPlayer().getBank());
+        putMoneyInPool(maxAmount);
         model.switchTurn();
-//        checkIfBetPhaseIsOver();
+
     }
 
     public boolean checkIfBetPhaseIsOver() {
@@ -171,6 +198,19 @@ public class PokerEngine {
     private void giveMoneyPool(Player player) {
         player.setBank(player.getBank() + model.getMoneyPool());
         model.setMoneyPool(0);
+    }
+
+
+    public boolean makeAiTurn() {
+        //If ai has a hand with something more than just a high card, call
+        if(determineHand(model.getCurrentPlayer().getHand())[0] > 0) {
+            call();
+            return true;
+        }
+        else {
+            fold();
+            return false;
+        }
     }
 
 
@@ -237,7 +277,7 @@ public class PokerEngine {
     }
 
     //Return 0 if not found, else return highest number in hand ranking
-    private int containsRoyalFlush(List<Card>  playerHand) {
+    private int containsRoyalFlush(List<Card> playerHand) {
         if(cardsAreOfSameSuit(playerHand) && deckContainsStraight(playerHand) == 2) return findHighestCard(playerHand);
         return 0;
     }

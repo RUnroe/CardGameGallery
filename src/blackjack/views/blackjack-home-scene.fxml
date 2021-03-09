@@ -26,13 +26,13 @@
    </Label>
    <Spinner fx:id="numberOfPlayersInput" layoutX="556.0" layoutY="340.0" prefHeight="26.0" prefWidth="68.0">
       <valueFactory>
-         <SpinnerValueFactory.IntegerSpinnerValueFactory max="4" min="2" />
+         <SpinnerValueFactory.IntegerSpinnerValueFactory max="5" min="1" />
        </valueFactory>
    </Spinner>
    <Label layoutX="440.0" layoutY="344.0" text="Number of Players" />
    <TextField fx:id="Player1NameInput" layoutX="734.0" layoutY="349.0" text="Player 1" />
    <Label layoutX="739.0" layoutY="331.0" text="Player 1 Name:" />
-   <TextField fx:id="Player2NameInput" layoutX="440.0" layoutY="431.0" text="Player 2" />
+   <TextField fx:id="Player2NameInput" disable="true" layoutX="440.0" layoutY="431.0" text="Player 2" />
    <Label layoutX="449.0" layoutY="413.0" text="Player 2 Name:" />
    <TextField fx:id="Player3NameInput" disable="true" layoutX="734.0" layoutY="431.0" text="Player 3" />
    <Label layoutX="739.0" layoutY="413.0" text="Player 3 Name:" />
