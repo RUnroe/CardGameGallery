@@ -6,18 +6,24 @@ import models.ERank;
 import models.Player;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GoFish {
     private static Player[] players;
     private static int[] scores;
     private static Deck deck;
     private static int turn;
+    private static ArrayList<ArrayList<Card>>[] allBooks;
 
     public GoFish(Player... p){
         turn = 0;
         players = p;
         scores = new int[players.length];
         deck = new Deck(1);
+        allBooks = new ArrayList[players.length];
+        for(int i = 0; i < players.length; i++){
+            allBooks[i] = new ArrayList<>();
+        }
         int l = players.length < 4 ? 7 : 5;
         for(int i = 0; i < l; i++){
             for(int j = 0; j < players.length; j++){
@@ -106,5 +112,37 @@ public class GoFish {
     }
     public static void nextTurn(){
         turn++;
+    }
+
+    public static String[] aiTurn(){
+        ArrayList<String> messages = new ArrayList<>();
+        Player ai = players[turn % players.length];
+        Card card = ai.getHand().get(new Random().nextInt(ai.getHand().size()));
+        int opponent = -999;
+        do {
+            opponent = new Random().nextInt(players.length);
+        } while (opponent != (turn % players.length));
+        messages.add(ai.getName() + "asked " + players[opponent].getName() + " for " + card.getRankAsString() + "s");
+        if(askForCard(opponent, card.getRank())){
+            messages.add(players[opponent].getName() + "had (a) " + card.getRankAsString() + "(s)");
+            takeCard(turn % players.length, opponent, card.getRank());
+            int[] books = checkHandForBook(turn % players.length);
+            if(books[0] != 0){
+                for(int i : books){
+                    messages.add(ai.getName() + " booked" + ERank.values()[i]);
+                    ArrayList<Card> book = book(ERank.values()[i], turn % players.length);
+                    allBooks[turn % players.length].add(book);
+                }
+            } else {
+                messages.add(ai.getName() + " had no books");
+            }
+        } else {
+            messages.add(players[opponent].getName() + " had no " + card.getRankAsString() + "s");
+        }
+        String[] mess = new String[messages.size()];
+        for(int i = 0; i < messages.size(); i++){
+            mess[i] = messages.get(i);
+        }
+        return mess;
     }
 }
