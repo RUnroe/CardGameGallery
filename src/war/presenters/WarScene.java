@@ -174,4 +174,9 @@ public class WarScene {
         }
 
     }
+
+
+    public void backToMenu(ActionEvent actionEvent) {
+        changeScene((Stage) CreateGameBtn.getScene().getWindow(), "/main/main-scene.fxml");
+    }
 }

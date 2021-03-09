@@ -57,8 +57,12 @@ public class MainScene {
     public void loadScene(String path) {
         try {
             Parent sceneRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
-            getStage().setTitle("Poker");
+            //getStage().initOwner(btnPlayPoker.getScene().getWindow());
             getStage().setScene(new Scene(sceneRoot));
+
+            //getStage().showAndWait();
+            getStage().show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

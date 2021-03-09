@@ -40,4 +40,5 @@
    <TextField fx:id="Player4NameInput" disable="true" layoutX="734.0" layoutY="513.0" text="Player 4" />
    <Label layoutX="739.0" layoutY="493.0" text="Player 4 Name:" />
    <Button fx:id="CreateGameBtn" layoutX="600.0" layoutY="627.0" mnemonicParsing="false" onAction="#createGame" text="Create Game" />
+   <Button layoutX="14.0" layoutY="680.0" mnemonicParsing="false" onAction="#backToMenu" text="Go Back" />
 </AnchorPane>

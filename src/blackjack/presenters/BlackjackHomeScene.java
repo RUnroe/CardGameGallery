@@ -60,6 +60,15 @@ public class BlackjackHomeScene {
         }
     }
 
+    public void changeScene(Stage stage, String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Stage getStage() {
         if (stage == null) {
             stage = new Stage();
@@ -161,5 +170,9 @@ public class BlackjackHomeScene {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void backToMenu(ActionEvent actionEvent) {
+        changeScene((Stage) Player1NameInput.getScene().getWindow(), "/main/main-scene.fxml");
     }
 }
