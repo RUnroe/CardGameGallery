@@ -10,14 +10,16 @@ public class Card {
     private final String name;
     private final ERank rank;
     private final ESuit suit;
-    private final ImageView imageView;
+//    private final ImageView imageView;
+//    private final ImageView imageViewBack;
     private boolean isFlipped;
 
     public Card(ERank rank, ESuit suit) {
         this.rank = rank;
         this.suit = suit;
         this.name = getRankAsString() + " of " + getSuitAsString();
-        this.imageView = loadImageViewFromPath("/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png");
+//        this.imageView = loadImageViewFromPath("/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png");
+//        this.imageViewBack = loadImageViewFromPath("/images/cards/PNG/Card_Back.png");
 //        String url = "src/resources/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png";
 //        this.imageView = loadImageViewFromPath(url);
 //        setupImageView();
@@ -29,8 +31,8 @@ public class Card {
 //        this.imageView.setScaleX(0.2);
 //        this.imageView.setScaleY(0.2);
         // gives an id to keep from being considered duplicates and for later accessibility
-        this.imageView.setId("imgView" + getRankAsString() + getSuitAsString());
-        this.imageView.setVisible(true);
+//        this.imageView.setId("imgView" + getRankAsString() + getSuitAsString());
+//        this.imageView.setVisible(true);
     }
 
     public ERank getRank() {
@@ -76,8 +78,12 @@ public class Card {
     }
 
     public ImageView getImageView() {
-        return imageView;
+        return isFlipped() ? loadImageViewFromPath("/images/cards/PNG/black/" + getSuitAsString() + "_" + getRankAsString() + "_black.png") : loadImageViewFromPath("/images/cards/PNG/Card_Back.png");
     }
+
+//    public ImageView getImageViewBack() {
+//        return imageViewBack;
+//    }
 
     private Image loadImageFromPath(String path) {
         Image image = null;

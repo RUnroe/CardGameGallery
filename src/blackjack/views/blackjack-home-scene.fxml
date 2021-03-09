@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane focusTraversable="true" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blackjack.presenters.BlackjackHomeScene">
+    <Label layoutX="593.0" layoutY="31.0" text="Blackjack" textAlignment="CENTER">
+        <font>
+            <Font name="System Bold" size="24.0" />
+        </font>
+    </Label>
+   <Label layoutX="603.0" layoutY="83.0" text="Load Game">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Button fx:id="ChooseFileBtn" disable="true" layoutX="543.0" layoutY="129.0" mnemonicParsing="false" onAction="#findFile" text="Choose File" />
+   <Label fx:id="LoadedFileName" layoutX="645.0" layoutY="137.0" text="No File chosen" />
+   <Button fx:id="LoadGameBtn" disable="true" layoutX="605.0" layoutY="187.0" mnemonicParsing="false" onAction="#loadGame" text="Play Game" />
+   <Separator layoutY="252.0" prefWidth="1280.0" />
+   <Label layoutX="577.0" layoutY="282.0" text="Create New Game">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <Spinner fx:id="numberOfPlayersInput" layoutX="556.0" layoutY="340.0" prefHeight="26.0" prefWidth="68.0">
+      <valueFactory>
+         <SpinnerValueFactory.IntegerSpinnerValueFactory max="4" min="2" />
+       </valueFactory>
+   </Spinner>
+   <Label layoutX="440.0" layoutY="344.0" text="Number of Players" />
+   <TextField fx:id="Player1NameInput" layoutX="734.0" layoutY="349.0" text="Player 1" />
+   <Label layoutX="739.0" layoutY="331.0" text="Player 1 Name:" />
+   <TextField fx:id="Player2NameInput" layoutX="440.0" layoutY="431.0" text="Player 2" />
+   <Label layoutX="449.0" layoutY="413.0" text="Player 2 Name:" />
+   <TextField fx:id="Player3NameInput" disable="true" layoutX="734.0" layoutY="431.0" text="Player 3" />
+   <Label layoutX="739.0" layoutY="413.0" text="Player 3 Name:" />
+   <TextField fx:id="Player4NameInput" disable="true" layoutX="440.0" layoutY="513.0" text="Player 4" />
+   <Label layoutX="449.0" layoutY="495.0" text="Player 4 Name:" />
+   <TextField fx:id="Player5NameInput" disable="true" layoutX="734.0" layoutY="513.0" text="Player 5" />
+   <Label layoutX="739.0" layoutY="495.0" text="Player 5 Name:" />
+   <Button fx:id="CreateGameBtn" layoutX="600.0" layoutY="627.0" mnemonicParsing="false" onAction="#createGame" text="Create Game" />
+</AnchorPane>
