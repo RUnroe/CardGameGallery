@@ -29,7 +29,7 @@ public class EngineOfWar {
         model.setRound(0);
         model.setPlayers(p);
         model.setupTable();
-        Deck deck = new Deck(1);
+        Deck deck = flipDeck(new Deck(1));
         System.out.println(deck.getCards().size());
 //        int deckSize = ((ArrayList<Card>) deck.getCards().clone()).size();
         int deckSize = ((ArrayList<?>) deck.getCards().clone()).size();
@@ -42,6 +42,13 @@ public class EngineOfWar {
                 System.out.println("War Loop incorrect");
             }
         }
+    }
+
+    private Deck flipDeck(Deck deck) {
+        for (Card card: deck.getCards()) {
+            card.setFlipped(true);
+        }
+        return deck;
     }
 
     public Card getNextCard() {

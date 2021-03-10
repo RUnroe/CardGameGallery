@@ -11,7 +11,7 @@ public class PokerModel implements Serializable {
 
 
     private ArrayList<Player> playerList = new ArrayList<>();
-    private Deck deck = new Deck(1);
+    private Deck deck = flipDeck(new Deck(1));
     private int moneyPool = 0;
     private int currentPlayerIndex = 0;
     private int currentBet = 0;
@@ -175,4 +175,10 @@ public class PokerModel implements Serializable {
         return players;
     }
 
+    private Deck flipDeck(Deck deck) {
+        for (Card card: deck.getCards()) {
+            card.setFlipped(true);
+        }
+        return deck;
+    }
 }
