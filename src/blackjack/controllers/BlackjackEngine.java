@@ -47,6 +47,7 @@ public class BlackjackEngine {
             blackjackHomeScene.setEngine(this);
             getStage().setX(0);
             getStage().setY(0);
+            getStage().show();
         }
     }
     public void setupGameGui(boolean isNewGame) {
