@@ -23,12 +23,17 @@ public class MainScene {
     //region Stage Handling
     private Stage stage;
 
+//    public void initialize() {
+//        getStage().hide();
+//    }
+
     public Stage getStage() {
         if (stage == null) {
             stage = new Stage();
         }
         return stage;
     }
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -56,6 +61,7 @@ public class MainScene {
 
     public void loadScene(String path) {
         try {
+            stage = new Stage();
             Parent sceneRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
             //getStage().initOwner(btnPlayPoker.getScene().getWindow());
             getStage().setScene(new Scene(sceneRoot));

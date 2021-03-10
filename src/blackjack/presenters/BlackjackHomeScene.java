@@ -173,6 +173,6 @@ public class BlackjackHomeScene {
     }
 
     public void backToMenu(ActionEvent actionEvent) {
-        changeScene((Stage) Player1NameInput.getScene().getWindow(), "/main/main-scene.fxml");
+        ((Stage) Player1NameInput.getScene().getWindow()).close();
     }
 }
