@@ -1,10 +1,11 @@
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class Deck {
+public class Deck implements Serializable {
     ArrayList<Card> cards;
 
     public Deck(int numOfCardPacks) {

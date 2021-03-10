@@ -29,11 +29,11 @@ public class BlackjackEngine {
         fxmlLoader.setLocation(getClass().getResource("../views/blackjack-game-scene.fxml"));
         try {
             Parent parent = fxmlLoader.load();
-            Main.getPrimaryStage().setScene(new Scene(parent));
-            Main.getPrimaryStage().setX(100);
-            Main.getPrimaryStage().setY(5);
-            Main.getPrimaryStage().setResizable(false);
-            Main.getPrimaryStage().setTitle("Blackjack");
+//            Main.getPrimaryStage().setScene(new Scene(parent));
+//            Main.getPrimaryStage().setX(100);
+//            Main.getPrimaryStage().setY(5);
+//            Main.getPrimaryStage().setResizable(false);
+//            Main.getPrimaryStage().setTitle("Blackjack");
         } catch (IOException e) {
             e.printStackTrace();
         }

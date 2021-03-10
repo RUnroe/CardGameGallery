@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #247345;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poker.presenters.PokerScene">
+   <children>
+      <HBox fx:id="CurrPlayerHandContainer" alignment="CENTER" layoutX="482.0" layoutY="506.0" prefHeight="116.0" prefWidth="363.0" style="-fx-border-color: #eee; -fx-border-radius: 5%; -fx-border-width: 5;" />
+      <Button fx:id="StartTurnBtn" layoutX="627.0" layoutY="344.0" mnemonicParsing="false" onAction="#playTurn" text="Ante Up">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="QuitGameBtn" layoutX="1184.0" layoutY="683.0" mnemonicParsing="false" onAction="#quitGame" text="Quit Game">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label fx:id="CurrPlayerNameDisplay" alignment="TOP_CENTER" layoutX="18.0" layoutY="647.0" prefHeight="27.0" prefWidth="116.0" text="Username" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="CurrPlayerBalanceDisplay" alignment="TOP_CENTER" layoutX="49.0" layoutY="669.0" prefHeight="27.0" prefWidth="53.0" text="\$100" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="BetControlBtn" disable="true" layoutX="485.0" layoutY="660.0" mnemonicParsing="false" onAction="#betTurn" text="Bet">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="RaiseControlBtn" disable="true" layoutX="548.0" layoutY="660.0" mnemonicParsing="false" onAction="#raiseTurn" text="Raise">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="AllInControlBtn" disable="true" layoutX="629.0" layoutY="660.0" mnemonicParsing="false" onAction="#allInTurn" text="Go All In">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="FoldControlBtn" disable="true" layoutX="729.0" layoutY="660.0" mnemonicParsing="false" onAction="#foldTurn" text="Fold">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="CallControlBtn" disable="true" layoutX="802.0" layoutY="660.0" mnemonicParsing="false" onAction="#callTurn" text="Call">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <HBox fx:id="BetButtonContainer" layoutX="541.0" layoutY="453.0" prefHeight="30.0" prefWidth="251.0">
+         <children>
+            <Button fx:id="Dollar1" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="Dollar5" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$5">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="Dollar10" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$10">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="Dollar20" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$20">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="Dollar50" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$50">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="Dollar100" disable="true" mnemonicParsing="false" onAction="#setBetRaiseValue" text="\$100">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <Label fx:id="LeftPlayerNameDisplay" alignment="TOP_CENTER" layoutX="16.0" layoutY="12.0" prefHeight="27.0" prefWidth="116.0" text="Username" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="LeftPlayerBalanceDisplay" alignment="TOP_CENTER" layoutX="50.0" layoutY="35.0" prefHeight="27.0" prefWidth="47.0" text="\$100" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="MidPlayerNameDisplay" alignment="TOP_CENTER" layoutX="604.0" layoutY="12.0" prefHeight="27.0" prefWidth="128.0" text="Username" textAlignment="CENTER" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="MidPlayerBalanceDisplay" alignment="TOP_CENTER" layoutX="638.0" layoutY="35.0" prefHeight="27.0" prefWidth="53.0" text="\$100" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="RightPlayerNameDisplay" alignment="TOP_CENTER" layoutX="1148.0" layoutY="12.0" prefHeight="27.0" prefWidth="116.0" text="Username" textAlignment="CENTER" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="RightPlayerBalanceDisplay" alignment="TOP_CENTER" layoutX="1181.0" layoutY="35.0" prefHeight="27.0" prefWidth="50.0" text="\$100" textFill="WHITE" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="BetMoneyDisplay" alignment="TOP_CENTER" layoutX="611.0" layoutY="205.0" prefHeight="27.0" prefWidth="100.0" text="Bet: $0" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="PoolMoneyDisplay" alignment="TOP_CENTER" layoutX="594.0" layoutY="253.0" prefHeight="27.0" prefWidth="142.0" text="Cash Pool: $0" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="OutputTxt" alignment="TOP_CENTER" layoutX="412.0" layoutY="98.0" prefWidth="498.0" text="Ante Up to start the game" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="DiscardBtn" disable="true" layoutX="866.0" layoutY="555.0" mnemonicParsing="false" onAction="#discardCards" text="Discard" />
+      <Button fx:id="SaveGameBtn" layoutX="1181.0" layoutY="638.0" mnemonicParsing="false" onAction="#saveGame" text="Save Game">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
