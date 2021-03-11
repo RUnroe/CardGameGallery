@@ -11,6 +11,7 @@ import models.Card;
 import models.CardComparator;
 import models.Deck;
 import models.Player;
+import main.Main;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;

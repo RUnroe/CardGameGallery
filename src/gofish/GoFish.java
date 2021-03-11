@@ -1,11 +1,17 @@
 package gofish;
 
+import gofish.presenters.GoFishGameScene;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import models.Card;
 import models.Deck;
 import models.ERank;
 import models.Player;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class GoFish {
@@ -14,8 +20,12 @@ public class GoFish {
     private static Deck deck;
     private static int turn;
     private static ArrayList<ArrayList<Card>>[] allBooks;
+    private static Stage rootStage;
+    private static GoFishGameScene gameScene;
 
-    public GoFish(Player... p){
+    private GoFish(){}
+
+    public static void setup(Player... p) {
         turn = 0;
         players = p;
         scores = new int[players.length];
@@ -31,6 +41,21 @@ public class GoFish {
                 deck.removeTopCard();
             }
         }
+        setupGameScene();
+    }
+
+    private static void setupGameScene() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(GoFish.class.getResource("../gofish/views/go-fish-game-scene.fxml")));
+        try {
+            rootStage.setScene(new Scene(fxmlLoader.load()));
+            gameScene = fxmlLoader.getController();
+            gameScene.updateCurrentPlayerDisplay(players[getPlayerTurn()]);
+            gameScene.setupSpinners();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static boolean askForCard(int player, ERank rank){
@@ -53,14 +78,24 @@ public class GoFish {
     public static int[] checkHandForBook(int player){
         ArrayList<Integer> books = new ArrayList<>();
         for(int i = 1; i < 14; i++){
-            int num = 0;
-            for(int j = 0; j < players[player].getHand().size(); j++){
-                if(players[player].getHand().get(j).getRankValue() == i){
-                    num++;
+            if (!books.contains(i)) {
+
+                int num = 0;
+                for(int j = 0; j < players[player].getHand().size(); j++){
+                    if(players[player].getHand().get(j).getRankValue() == i){
+                        num++;
+                    }
                 }
-            }
-            if(num == 4){
-                books.add(i);
+                if(num == 4){
+                    books.add(i);
+                    players[player].setScore(players[player].getScore()+2);
+                    int finalI = i;
+                    new ArrayList<Card>(players[player].getHand()).forEach(card -> {
+                        if (card.getRankValue() == finalI) {
+                            players[player].getHand().remove(card);
+                        }
+                    });
+                }
             }
         }
         return books.stream().mapToInt(i -> i).toArray();
@@ -106,6 +141,22 @@ public class GoFish {
     public static int getTurn() {
         return turn;
     }
+
+    public static int getPlayerTurn() {
+        return turn % players.length;
+    }
+
+    public static Stage getRootStage() {
+        return rootStage;
+    }
+
+    public static void setRootStage(Stage rootStage) {
+        GoFish.rootStage = rootStage;
+    }
+
+    //    public static updateCurrentPlayerDisplay() {
+//        Player currentPlayer = players[getPlayerTurn()];
+//    }
 
     public static void setTurn(int turn) {
         GoFish.turn = turn;

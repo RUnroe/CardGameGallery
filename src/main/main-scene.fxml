@@ -12,7 +12,7 @@
       </font></Label>
 <Button fx:id="btnPlayPoker" mnemonicParsing="false" onAction="#onActionBtnPlayPoker" text="Poker" />
 <Button fx:id="btnPlayBlackjack" disable="true" mnemonicParsing="false" onAction="#onActionBtnPlayBlackjack" text="Blackjack" />
-<Button fx:id="btnPlayGoFish" disable="true" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#onActionBtnPlayGoFish" text="Go Fish" />
+<Button fx:id="btnPlayGoFish" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#onActionBtnPlayGoFish" text="Go Fish" />
 <Button fx:id="btnPlayWar" layoutX="10.0" layoutY="61.0" mnemonicParsing="false" onAction="#onActionBtnPlayWar" text="War" />
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

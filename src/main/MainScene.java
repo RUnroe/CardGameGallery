@@ -46,6 +46,8 @@ public class MainScene {
     }
 
     public void onActionBtnPlayGoFish(ActionEvent actionEvent) {
+        loadScene("../gofish/views/go-fish-home-scene.fxml");
+
     }
 
     public void onActionBtnPlayWar(ActionEvent actionEvent) {

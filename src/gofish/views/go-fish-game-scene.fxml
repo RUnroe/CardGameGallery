@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #247345;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gofish.presenters.GoFishGameScene">
+   <Button fx:id="StartTurnBtn" layoutX="604.0" layoutY="570.0" mnemonicParsing="false" onAction="#playRound" text="Play Round">
+      <font>
+         <Font size="14.0" />
+      </font>
+   </Button>
+   <Button fx:id="QuitGameBtn" layoutX="1184.0" layoutY="683.0" mnemonicParsing="false" onAction="#quitGame" text="Quit Game">
+      <font>
+         <Font size="14.0" />
+      </font>
+   </Button>
+   <Label fx:id="OutputTxt" layoutX="589.0" layoutY="40.0" textFill="WHITE">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
+   <VBox alignment="TOP_CENTER" layoutX="138.0" layoutY="296.0" spacing="25.0" style="-fx-border-color: darkorange; -fx-border-width: 3; -fx-border-radius: 5%;">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding>
+      <Label fx:id="lblCurrentPlayerName" text="Player Name">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Separator prefWidth="200.0" />
+      <HBox fx:id="hBoxCurrentPlayerHand" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
+   </VBox>
+   <HBox fx:id="hBoxCurrentPlayerActions" layoutX="437.0" layoutY="155.0" />
+   <VBox fx:id="vBoxAskedPlayerPrompt" alignment="TOP_CENTER" layoutX="763.0" layoutY="132.0" spacing="15.0">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding>
+      <Label fx:id="lblGiver" text="Label">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button mnemonicParsing="false" onAction="#onActionGiveCards" text="Give Cards" />
+      <Button mnemonicParsing="false" onAction="#onActionGoFish" text="Say &quot;Go Fish!&quot;" />
+   </VBox>
+   <VBox alignment="CENTER" layoutX="564.0" layoutY="117.0" spacing="15.0" style="-fx-background-color: #bb660099; -fx-background-radius: 5%;">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding>
+      <Spinner fx:id="spinnerRank" />
+      <Label text="from" textFill="#dddddd" />
+      <Spinner fx:id="spinnerPlayers" />
+      <Button mnemonicParsing="false" onAction="#onActionAskForCard" text="Ask!" />
+   </VBox>
+</AnchorPane>
