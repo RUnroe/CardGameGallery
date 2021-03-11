@@ -448,7 +448,7 @@ public class PokerScene {
         if(engine.getModel().getGameStage() == GameStage.DISCARD) {
             for(int i = 0; i < CurrPlayerHandContainer.getChildren().size(); i++) {
                 CurrPlayerHandContainer.getChildren().get(i).setId("PlayerCard" + i);
-                ((ImageView) CurrPlayerHandContainer.getChildren().get(i)).setOnMouseClicked(selectCardHandler);
+                CurrPlayerHandContainer.getChildren().get(i).setOnMouseClicked(selectCardHandler);
             }
             updateCardDisplay();
         }
@@ -499,7 +499,7 @@ public class PokerScene {
     //Enable or disable the bet/raise buttons (1,5,10,20,50,100)
     private void showBetRaiseBtns(boolean showButtons) {
         for(Node node :BetButtonContainer.getChildren()) {
-            ((Button) node).setDisable(!showButtons);
+            node.setDisable(!showButtons);
         }
     }
 
