@@ -6,22 +6,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Card;
+import models.CardComparator;
 import models.ERank;
-import models.ESuit;
 import models.Player;
-import war.controllers.EngineOfWar;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class GoFishGameScene {
     //Options/Menu screen
@@ -33,7 +31,7 @@ public class GoFishGameScene {
 //    public TextField Player2NameInput;
 //    public Button CreateGameBtn;
 
-    //Game screen
+    //region Game screen
     public Button StartTurnBtn;
     public Label Player1NameDisplay;
     public Label Player1CardCountDisplay;
@@ -44,15 +42,21 @@ public class GoFishGameScene {
     public Label OutputTxt;
     public Button QuitGameBtn;
 
-//    private static EngineOfWar engine;
+    //    private static EngineOfWar engine;
     public Label lblCurrentPlayerName;
     public HBox hBoxCurrentPlayerHand;
     public Spinner<ERank> spinnerRank;
-//    public Spinner<ESuit> spinnerSuit;
+    //    public Spinner<ESuit> spinnerSuit;
     public Spinner<String> spinnerPlayers;
     public VBox vBoxAskedPlayerPrompt;
-    public HBox hBoxCurrentPlayerActions;
+    public VBox vBoxPlayerActions;
     public Label lblGiver;
+    public VBox vBoxPlayerHand;
+    public Button btnTogglePlayerHand;
+    public VBox vBoxScoreboard;
+    public Label lblGoFish;
+    public VBox vBoxBooks;
+    //endregion
 
     public void changeScene(Stage stage, String fxmlPath) {
         try {
@@ -71,29 +75,45 @@ public class GoFishGameScene {
 //        engine = new GoFish();
     }
 
-    public void setupSpinners() {
-        SpinnerValueFactory<ERank> svfRank = new SpinnerValueFactory.ListSpinnerValueFactory<ERank>(FXCollections.observableArrayList(ERank.values()));
+    public void updateSpinners() {
+        List<ERank> heldRanks = new ArrayList<>();
 //        SpinnerValueFactory<ESuit> svfSuit = new SpinnerValueFactory.ListSpinnerValueFactory<ESuit>(FXCollections.observableArrayList(ESuit.values()));
-        String[] playerNames = new String[GoFish.getPlayers().length];
-        for (int playerIndex = 0; playerIndex < playerNames.length; playerIndex++) {
-            playerNames[playerIndex] = GoFish.getPlayers()[playerIndex].getName();
+        List<String> playerNames = new ArrayList<>();
+        for (Player player : GoFish.getPlayers()) {
+            if (!player.getName().equals(GoFish.getPlayers()[GoFish.getPlayerTurn()].getName())) {
+                playerNames.add(player.getName());
+            } else {
+                for (Card card : player.getHand()) {
+                    if (!heldRanks.contains(card.getRank())) {
+                        heldRanks.add(card.getRank());
+                    }
+                }
+            }
         }
+        SpinnerValueFactory<ERank> svfRank = new SpinnerValueFactory.ListSpinnerValueFactory<ERank>(FXCollections.observableArrayList(heldRanks));
         SpinnerValueFactory<String> svfPlayerNames = new SpinnerValueFactory.ListSpinnerValueFactory<String>(FXCollections.observableArrayList(playerNames));
         spinnerRank.setValueFactory(svfRank);
-//        spinnerSuit.setValueFactory(svfSuit);
         spinnerPlayers.setValueFactory(svfPlayerNames);
     }
 
-    public void updateCurrentPlayerDisplay(Player player) {
+    public void updateDisplay(Player player) {
         if (hBoxCurrentPlayerHand == null) {
             hBoxCurrentPlayerHand = new HBox();
         }
-        lblCurrentPlayerName.setText(player.getName());
+        lblCurrentPlayerName.setText(player.getName() + " | " + player.getScore() + "pts");
         hBoxCurrentPlayerHand.getChildren().clear();
         player.getHand().forEach(card -> {
             hBoxCurrentPlayerHand.getChildren().add(card.getImageView());
         });
-        toggleCurrentPlayerDislay();
+//        toggleCurrentPlayerDislay();
+        updateBookDisplay();
+    }
+
+    private void updateBookDisplay() {
+        vBoxBooks.getChildren().clear();
+        for (ERank book : GoFish.getCompletedBooks()) {
+            vBoxBooks.getChildren().add(new Label(book.name()));
+        }
     }
 
 //    public void toggleIncludingAI(ActionEvent actionEvent) {
@@ -115,7 +135,7 @@ public class GoFishGameScene {
 //    }
 
     public void quitGame(ActionEvent actionEvent) {
-        changeScene((Stage) QuitGameBtn.getScene().getWindow(), "../views/war-home-scene.fxml");
+        changeScene((Stage) QuitGameBtn.getScene().getWindow(), "../views/go-fish-home-scene.fxml");
     }
 
     private void gameWon(Player winningPlayer) {
@@ -131,7 +151,15 @@ public class GoFishGameScene {
     public void playRound(ActionEvent actionEvent) {
         //while(engine.checkForWin() == -1) {
 //        updatePlayerNames();
-        updateCurrentPlayerDisplay(GoFish.getPlayers()[GoFish.getPlayerTurn()]);
+        hBoxCurrentPlayerHand.getChildren().clear();
+        for (Player player : GoFish.getPlayers()) {
+            player.getHand().clear();
+        }
+        GoFish.setup(GoFish.getPlayers());
+        updateDisplay(GoFish.getPlayers()[GoFish.getPlayerTurn()]);
+        vBoxPlayerHand.setVisible(true);
+        vBoxPlayerActions.setVisible(true);
+
 //        updateCardCountDisplay();
         //Make each player place their card on the board
 //        for (int i = 0; i < GoFish.getPlayers().length; i++) {
@@ -217,15 +245,27 @@ public class GoFishGameScene {
 
     public void onActionAskForCard(ActionEvent actionEvent) {
         String giverName = spinnerPlayers.getValue();
-        if (!giverName.equals(GoFish.getPlayers()[GoFish.getPlayerTurn()].getName())) {
-            hBoxCurrentPlayerHand.setVisible(false);
-            hBoxCurrentPlayerActions.setVisible(false);
-            hBoxCurrentPlayerActions.setDisable(true);
-            vBoxAskedPlayerPrompt.setVisible(true);
-            vBoxAskedPlayerPrompt.setDisable(false);
+        Player giver = null;
+        for (Player player : GoFish.getPlayers())
+            if (giverName.equals(player.getName())) {
+                giver = player;
+                break;
+            }
+        assert giver != null;
+        if (!giver.isPlayerAI()) {
+//            hBoxCurrentPlayerHand.setVisible(false);
+//            hBoxCurrentPlayerActions.setVisible(false);
+//            hBoxCurrentPlayerActions.setDisable(true);
+//            vBoxAskedPlayerPrompt.setVisible(true);
+//            vBoxAskedPlayerPrompt.setDisable(false);
+            toggleCurrentPlayerDisplay();
             lblGiver.setText(giverName);
+            onActionTogglePlayerHud(null);
+            giver.getHand().sort(new CardComparator());
+            updateDisplay(giver);
             //TODO display prompt for asked player to respond.
         } else {
+            onActionGiveCards(null);
             // TODO display message saying you can't ask yourself
         }
     }
@@ -243,13 +283,26 @@ public class GoFishGameScene {
             List<Card> matches = new ArrayList<>();
             for(Card card : giver.getHand()) {
                 if (card.getRank().equals(askedForCardRank)) {
+                    System.out.println(card.getName());
                     matches.add(card);
                 }
             }
             if (matches.size() > 0) {
                 GoFish.getPlayers()[GoFish.getPlayerTurn()].getHand().addAll(matches);
+                GoFish.getPlayers()[GoFish.getPlayerTurn()].getHand().sort(new CardComparator());
                 giver.getHand().removeAll(matches);
                 GoFish.checkHandForBook(GoFish.getPlayerTurn());
+                giver.getHand().sort(new CardComparator());
+                if (!giver.isPlayerAI()) {
+                    toggleCurrentPlayerDisplay();
+                    onActionTogglePlayerHud(null);
+                }
+                GoFish.checkHandForBook(GoFish.getPlayerTurn());
+                updateDisplay(GoFish.getPlayers()[GoFish.getPlayerTurn()]);
+                updateSpinners();
+                if (GoFish.getPlayers()[GoFish.getPlayerTurn()].isPlayerAI()) {
+                    GoFish.aiTurn();
+                }
             } else {
                 onActionGoFish(null);
             }
@@ -257,16 +310,71 @@ public class GoFishGameScene {
     }
 
     public void onActionGoFish(ActionEvent actionEvent) {
-        GoFish.nextTurn();
-        updateCurrentPlayerDisplay(GoFish.getPlayers()[GoFish.getPlayerTurn()]);
+        if (GoFish.getDeck().getCards().size() > 0) {
+
+            GoFish.getPlayers()[GoFish.getPlayerTurn()].drawFromDeck(GoFish.getDeck());
+            GoFish.getPlayers()[GoFish.getPlayerTurn()].getHand().sort(new CardComparator());
+            GoFish.nextTurn();
+            GoFish.getPlayers()[GoFish.getPlayerTurn()].getHand().sort(new CardComparator());
+            GoFish.checkHandForBook(GoFish.getPlayerTurn());
+            updateDisplay(GoFish.getPlayers()[GoFish.getPlayerTurn()]);
+            updateSpinners();
+//        for (int i = 0; i < GoFish.getPlayers().length; i++) {
+//            GoFish.getPlayers()[i].setScore(18 + i*2);
+//        }
+            int booksCompleted = 0;
+            for (Player player : GoFish.getPlayers()) {
+                booksCompleted += player.getScore();
+            }
+            booksCompleted /= 2;
+            if (GoFish.getDeck().getCards().size() < 1 || booksCompleted >= 13) {
+                displayScoreBoard();
+            }
+            if (GoFish.getPlayers()[GoFish.getPlayerTurn()].isPlayerAI()) {
+                boolean isCardFound;
+                do {
+                    isCardFound = GoFish.aiTurn();
+                } while (isCardFound);
+                onActionGoFish(null);
+            } else {
+                toggleCurrentPlayerDisplay();
+            }
+            vBoxAskedPlayerPrompt.setVisible(false);
+            vBoxPlayerHand.setVisible(false);
+            vBoxPlayerActions.setVisible(false);
+            lblGoFish.setVisible(true);
+        } else {
+            displayScoreBoard();
+        }
     }
 
-    public void toggleCurrentPlayerDislay() {
-        hBoxCurrentPlayerHand.setVisible(!hBoxCurrentPlayerHand.isVisible());
-        hBoxCurrentPlayerActions.setVisible(!hBoxCurrentPlayerActions.isVisible());
-        hBoxCurrentPlayerActions.setDisable(!hBoxCurrentPlayerActions.isDisable());
+    private void displayScoreBoard() {
+        vBoxPlayerHand.setVisible(false);
+        vBoxPlayerActions.setVisible(false);
+        vBoxAskedPlayerPrompt.setVisible(false);
+        btnTogglePlayerHand.setVisible(false);
+        lblGoFish.setVisible(false);
+        List<Player> rankedPlayers = Arrays.asList(GoFish.getPlayers());
+        rankedPlayers.sort(new Comparator<Player>() {
+            @Override
+            public int compare(Player playerA, Player playerB) {
+                return playerB.getScore() - playerA.getScore();
+            }
+        });
+        for (Player player : rankedPlayers) {
+            vBoxScoreboard.getChildren().add(new Label(player.getName() + ": " + player.getScore()));
+        }
+    }
+
+    public void toggleCurrentPlayerDisplay() {
         vBoxAskedPlayerPrompt.setVisible(!vBoxAskedPlayerPrompt.isVisible());
-        vBoxAskedPlayerPrompt.setDisable(!vBoxAskedPlayerPrompt.isDisable());
+//        vBoxPlayerActions.setDisable(!vBoxPlayerActions.isDisable());
+//        vBoxAskedPlayerPrompt.setDisable(!vBoxAskedPlayerPrompt.isDisable());
     }
 
+    public void onActionTogglePlayerHud(ActionEvent actionEvent) {
+        vBoxPlayerHand.setVisible(!vBoxPlayerHand.isVisible());
+        vBoxPlayerActions.setVisible(!vBoxAskedPlayerPrompt.isVisible());
+        lblGoFish.setVisible(false);
+    }
 }

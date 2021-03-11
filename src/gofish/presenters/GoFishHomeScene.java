@@ -2,9 +2,7 @@ package gofish.presenters;
 
 import gofish.GoFish;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,14 +11,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import models.Card;
 import models.Player;
 import poker.controllers.PokerEngine;
-import poker.models.GameStage;
 import poker.models.PokerModel;
 
 import java.awt.*;
@@ -29,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GoFishHomeScene {
@@ -43,6 +38,11 @@ public class GoFishHomeScene {
     public Button LoadGameBtn;
     public Label LoadedFileName;
     public Button ChooseFileBtn;
+    public CheckBox checkBoxIsPlayerOneAI;
+    public CheckBox checkBoxIsPlayerThreeAI;
+    public CheckBox checkBoxIsPlayerTwoAI;
+    public CheckBox checkBoxIsPlayerFourAI;
+    private CheckBox[] aiCheckboxes;
 
 //    //Game scene
 //    public HBox CurrPlayerHandContainer;
@@ -89,6 +89,7 @@ public class GoFishHomeScene {
         } catch(Exception e) {
             e.printStackTrace();
         }
+        aiCheckboxes = new CheckBox[]{checkBoxIsPlayerOneAI, checkBoxIsPlayerTwoAI, checkBoxIsPlayerThreeAI, checkBoxIsPlayerFourAI};
     }
 
     public void changeScene(Stage stage, String fxmlPath) {
@@ -113,9 +114,16 @@ public class GoFishHomeScene {
 //        engine = new PokerEngine(playerList);
         //change scene to game scene
 //        changeScene((Stage) CreateGameBtn.getScene().getWindow(), "../views/poker-game-scene.fxml");
-
+        List<Player> players = getPlayerList();
+        for (int playerNum = 0; playerNum < players.size(); playerNum++) {
+            players.get(playerNum).setPlayerAI(aiCheckboxes[playerNum].isSelected());
+            System.out.println(players.get(playerNum).getName() + "is AI: " + players.get(playerNum).isPlayerAI());
+        }
         GoFish.setRootStage((Stage) CreateGameBtn.getScene().getWindow());
-        GoFish.setup(getPlayerList().toArray(new Player[0]));
+        GoFish.setup(players.toArray(new Player[0]));
+        if (GoFish.getPlayers()[0].isPlayerAI()) {
+            GoFish.aiTurn();
+        }
 //        changeScene((Stage) CreateGameBtn.getScene().getWindow(), "../views/go-fish-game-scene.fxml");
     }
     //Go to game page with game information
@@ -365,22 +373,22 @@ public class GoFishHomeScene {
     }
 
     public void onActionIsPlayerOneAI(ActionEvent actionEvent) {
-        isPlayerOneAI = !isPlayerOneAI;
+        isPlayerOneAI = checkBoxIsPlayerOneAI.isSelected();
         Player1NameInput.setText((isPlayerOneAI ? "CPU-1" : "Player One"));
     }
 
     public void onActionIsPlayerTwoAI(ActionEvent actionEvent) {
-        isPlayerTwoAI = !isPlayerTwoAI;
+        isPlayerTwoAI = checkBoxIsPlayerTwoAI.isSelected();
         Player2NameInput.setText((isPlayerTwoAI ? "CPU-2" : "Player Two"));
     }
 
     public void onActionIsPlayerThreeAI(ActionEvent actionEvent) {
-        isPlayerThreeAI = !isPlayerThreeAI;
-        Player3NameInput.setText((isPlayerThreeAI ? "CPU-3" : "Player Three" ));
+        isPlayerThreeAI = checkBoxIsPlayerThreeAI.isSelected();
+        Player3NameInput.setText((isPlayerThreeAI ? "CPU-3" : "Player Three"));
     }
 
     public void onActionIsPlayerFourAI(ActionEvent actionEvent) {
-        isPlayerFourAI = !isPlayerFourAI;
+        isPlayerFourAI = checkBoxIsPlayerFourAI.isSelected();
         Player4NameInput.setText((isPlayerFourAI ? "CPU-4" : "Player Four"));
     }
 
