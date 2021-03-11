@@ -17,11 +17,11 @@ public class PokerModel implements Serializable {
     private int currentBet = 0;
     private int lastPlayerToRaise = -1;
     private GameStage gameStage = GameStage.ANTE;
-    private boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
+    private final boolean[] cardsToDiscard = new boolean[] {false, false, false, false, false};
     private int raiseAmount = 0;
     private boolean inBetPhase = true;
 
-    private boolean[] playerHasFolded = new boolean[] {false, false, false, false};
+    private final boolean[] playerHasFolded = new boolean[] {false, false, false, false};
 
     //Getters and Setters
     public ArrayList<Player> getPlayerList() {

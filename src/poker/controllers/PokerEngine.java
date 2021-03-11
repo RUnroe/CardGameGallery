@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class PokerEngine {
-    private int bankInitValue = 100;
+    private final int bankInitValue = 100;
 
-    private PokerModel model;
+    private final PokerModel model;
 
 
     public PokerEngine(ArrayList<Player> players) {

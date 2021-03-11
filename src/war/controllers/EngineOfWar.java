@@ -10,10 +10,10 @@ import java.util.Collections;
 
 public class EngineOfWar {
 
-    private WarModel model;
+    private final WarModel model;
 
     //Holds cards from war in the case that a second war takes place
-    private ArrayList<Card> warPile = new ArrayList<>();
+    private final ArrayList<Card> warPile = new ArrayList<>();
 
     public EngineOfWar() {
         this.model = new WarModel();
